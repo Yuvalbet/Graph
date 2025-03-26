@@ -2,12 +2,96 @@
 #include <iostream>
 
 namespace graph {
-    Graph::Graph(int vertices){
-
+    Graph::Graph(int vertices) {
+        this->vertices = vertices;
+        adjList = new Node*[vertices];
+        for (int i = 0; i < vertices; i++) {
+            adjList[i] = nullptr;
+        }
     }
 
-    void Graph::addEdge(int src, int dest, int weight){
-        
+    Graph::~Graph() {
+        for (int i = 0; i < vertices; i++) {
+            Node* current = adjList[i];
+            while (current) {
+                Node* temp = current;
+                current = current->next;
+                delete temp;  // מחיקת כל צומת ברשימה
+            }
+        }
+        delete[] adjList;  // מחיקת מערך המצביעים
     }
 
+    void Graph::addEdge(int src, int dest, int weight) {
+        if (src < 0 || dest < 0 || src >= vertices || dest >= vertices) {
+            std::cerr << "Error: The vertex not found" << std::endl;
+            return;
+        }
+
+        // יצירת קשת חדשה בצומת src
+        Node* newNode = new Node{dest, weight, adjList[src]};  
+        adjList[src] = newNode;
+
+        // יצירת קשת נוספת בצומת dest אם הגרף הוא לא מכוון
+        newNode = new Node{src, weight, adjList[dest]};  
+        adjList[dest] = newNode;
+    }
+
+    void Graph::removeEdge(int src, int dest) {
+        if (src < 0 || dest < 0 || src >= vertices || dest >= vertices) {
+            std::cerr << "Error: The vertex not found" << std::endl;
+            return;
+        }
+
+        // הסרת קשת מצומת src
+        Node* current = adjList[src];
+        Node* prev = nullptr;
+        while (current && current->id != dest) {
+            prev = current;
+            current = current->next;
+        }
+
+        if (!current) {
+            std::cerr << "Error: Edge not found" << std::endl;
+            return;
+        }
+
+        if (prev)
+            prev->next = current->next;
+        else
+            adjList[src] = current->next;  // הסרה מקצה הרשימה
+
+        delete current;
+
+        // הסרה דו-כיוונית עבור הקשת בצומת dest
+        current = adjList[dest];
+        prev = nullptr;
+
+        while (current && current->id != src) {
+            prev = current;
+            current = current->next;
+        }
+
+        if (!current) return;
+
+        if (prev)
+            prev->next = current->next;
+        else
+            adjList[dest] = current->next;
+
+        delete current;
+    }
+
+    void Graph::print_graph() {
+        for (int i = 0; i < vertices; i++) {
+            std::cout << "Vertex " << i << ": ";
+            Node* current = adjList[i];
+            while (current) {
+                std::cout << "(" << current->id << ", " << current->weight << ") -> ";
+                current = current->next;
+            }
+            std::cout << "NULL" << std::endl;
+        }
+    }
 }
+

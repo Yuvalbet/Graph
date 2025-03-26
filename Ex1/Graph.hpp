@@ -3,9 +3,16 @@
 
 namespace graph {
 
+    struct Node {
+        int id;         
+        int weight;
+        Node* next;
+    };
     
     class Graph {
         private:
+        int vertices;
+        Node** adjList;
 
 
 
