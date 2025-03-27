@@ -1,5 +1,5 @@
-#ifndef ALGORITHMS.HPP
-#define ALGORITHMS.HPP
+#ifndef ALGORITHMS_HPP
+#define ALGORITHMS_HPP
 
 #include "Graph.hpp"
 #include "Queue.hpp"
@@ -12,8 +12,8 @@ namespace graph {
 
 
         public:
-            static void bfs(const Graph& graph, int startVertex);
-            static void dfs(const Graph& graph, int startVertex);
+            static Graph bfs(const Graph& graph, int startVertex);
+            static Graph dfs(const Graph& graph, int startVertex);
             static void dijkstra(const Graph& graph, int startVertex);
     };
 }

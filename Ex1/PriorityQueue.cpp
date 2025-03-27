@@ -63,11 +63,14 @@ int PriorityQueue::pop(){
     positions[heap[0].vertex] = 0;
     size--;
     heapifyDown(0);
+    heap[size] = {};
 
     return vertex;
 }
 
 void PriorityQueue::decreaseKey(int vertex, int newPriority){
+    if(vertex < 0 || vertex >= capacity || positions[vertex] >= size)
+    return;
     int index = positions[vertex];
     heap[index].priority = newPriority;
     heapifyUp(index);

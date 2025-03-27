@@ -2,69 +2,80 @@
 #include <iostream>
 
 namespace graph {
-    void Algorithms::bfs(const Graph& graph, int startVertex){
+    Graph Algorithms::bfs(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
-        //מערך לבדיקת ביקור בצמתים
-        bool* visited = new bool[vertices]{false};
-        //יצירת תור בגודל הגרף
-        Queue q(vertices);
+        bool* visited = new bool[vertices] {false};
+        Graph tree(vertices); // יצירת עץ BFS ריק
 
-        visited[startVertex] == true;
+        Queue q(vertices);
+        visited[startVertex] = true;
         q.enqueue(startVertex);
 
-        while (!q.isEmpty()){
-            int current = q.dequeue();
-            std::cout << current << " ";
         
-            //נעבור על כל השכנים של הצומת הנוכחי
+        while (!q.isEmpty()) {
+            int current = q.dequeue();
+            
+
+            // מעבר על השכנים של הצומת הנוכחי
             Node* temp = graph.getAdjList()[current];
-            while (temp){
-                if (!visited[temp->id]){
-                    visited[temp->id] = true;
-                    q.enqueue(temp->id);
+
+            while (temp) {
+                int neighbor = temp->id;
+                int weight = temp->weight; // שומרים את המשקל המקורי
+
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    q.enqueue(neighbor);
+
+                    // הוספת הקשת לעץ ה-BFS עם המשקל המקורי
+                    tree.addOneEdge(current, neighbor, weight);
                 }
-                temp = temp->next;  
+                temp = temp->next;
             }
         }
         std::cout << std::endl;
+
         delete[] visited;
-        
+        return tree;
     }
 
 
-    void Algorithms::dfs(const Graph& graph, int startVertex){
+
+    Graph Algorithms::dfs(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
-        //מערך לבדיקת ביקור בצמתים
-        bool* visited = new bool[vertices]{false};
-        //יצירת מחסנית בגודל מספר הצמתים
-        Stack stack(vertices);
-
-        //נכניס את הצומת ההתחלתי למחסנית
-        stack.push(startVertex);
-
-        while (!stack.isEmpty()){
+        bool* visited = new bool[vertices]{false};  // מערך ביקור
+        Stack stack(vertices);  // מחסנית עבור DFS
+        Graph tree(vertices);  // יצירת גרף חדש עבור עץ DFS
+    
+        stack.push(startVertex);  // הכנסת הצומת ההתחלתי
+    
+        while (!stack.isEmpty()) {
             int current = stack.pop();
-
-            if (!visited[current]){
-                std::cout << current << " ";
+    
+            if (!visited[current]) {
                 visited[current] = true;
             }
-                 
-            //נעבור על כל השכנים של הצומת הנוכחי
-            Node* temp = graph.getAdjList()[current];
-            while (temp){
-                if (!visited[temp->id]){
-                    //נדחוף למחסנית רק צמתים שלא ביקרנו בהם
-                    stack.push(temp->id);
+    
+            Node* temp = graph.getAdjList()[current];  // קבלת רשימת שכנים
+    
+            while (temp) {
+                int neighbor = temp->id;
+                int weight = temp->weight;  // שמירת המשקל המקורי (למרות שהוא לא חשוב ל-DFS)
+    
+                if (!visited[neighbor]) {
+                    stack.push(neighbor);
+                    tree.addOneEdge(current, neighbor, weight);  // הוספת הצלע לעץ DFS
                 }
-                temp = temp->next;  
+    
+                temp = temp->next;
             }
         }
-        std::cout << std::endl;
+    
         delete[] visited;
-        
+        return tree;  // החזרת עץ DFS
     }
 
+    
     void Algorithms::dijkstra(const Graph& graph, int startVertex){
         int vertices = graph.getVertices();
         int* distances = new int[vertices];
@@ -92,7 +103,7 @@ namespace graph {
             visited[current] = true;
                  
             //נעבור על כל השכנים של הצומת הנוכחי
-            Node* temp = graph.getAdjList()[current];
+            Node* temp = graph.getNeighbors(current);
             while (temp){
                 int neighbor = temp->id;
                 int weight = temp->weight;

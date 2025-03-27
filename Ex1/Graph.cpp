@@ -37,6 +37,17 @@ namespace graph {
         adjList[dest] = newNode;
     }
 
+    void Graph::addOneEdge(int src, int dest, int weight) {
+        if (src < 0 || dest < 0 || src >= vertices || dest >= vertices) {
+            std::cerr << "Error: The vertex not found" << std::endl;
+            return;
+        }
+    
+        // יצירת קשת חדשה רק בכיוון src → dest (לגרף מכוון)
+        Node* newNode = new Node{dest, weight, adjList[src]};
+        adjList[src] = newNode;
+    }
+
     void Graph::removeEdge(int src, int dest) {
         if (src < 0 || dest < 0 || src >= vertices || dest >= vertices) {
             std::cerr << "Error: The vertex not found" << std::endl;
@@ -82,15 +93,20 @@ namespace graph {
         delete current;
     }
 
-    void Graph::print_graph() {
+    void Graph::print_graph() const {
         for (int i = 0; i < vertices; i++) {
             std::cout << "Vertex " << i << ": ";
             Node* current = adjList[i];
-            while (current) {
-                std::cout << "(" << current->id << ", " << current->weight << ") -> ";
-                current = current->next;
+    
+            if(!current){
+                std::cout << "No children";
+            }else{
+                while (current) {
+                    std::cout << "(" << current->id << ", " << current->weight << ") ";  // אם הקודקוד לא מחובר לאף צומת
+                    current = current->next;
+                }
             }
-            std::cout << "NULL" << std::endl;
+            std::cout << std::endl;
         }
     }
 

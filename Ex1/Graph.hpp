@@ -22,8 +22,9 @@ namespace graph {
 
 
         void addEdge(int src, int dest, int weight);
+        void addOneEdge(int src, int dest, int weight);
         void removeEdge(int src, int dest);
-        void print_graph();
+        void print_graph() const;
         
         //פונקציה שמחזירה את רשימת השכנית של הצומת
         Node* getNeighbors(int vertex) const;
