@@ -93,5 +93,25 @@ namespace graph {
             std::cout << "NULL" << std::endl;
         }
     }
+
+
+    Node* Graph:: getNeighbors(int vertex) const{
+        if (vertex < 0 || vertex >= vertices){
+            return nullptr;
+        }
+        return adjList[vertex];
+    }
+
+    int Graph::getVertexCount() const{
+        return vertices;
+    }
+
+    int Graph::getVertices() const{
+        return vertices;
+    }
+
+    Node** Graph::getAdjList() const{
+        return adjList;
+    }
 }
 

@@ -2,6 +2,7 @@
 #define ALGORITHMS.HPP
 
 #include "Graph.hpp"
+#include "Queue.hpp"
 
 namespace graph {
     class Algorithms{ 
@@ -9,13 +10,7 @@ namespace graph {
 
 
         public:
-        Graph BFS(Graph g, int vertix);
-        
-        Graph DFS(Graph g, int vertix);
-
-        Graph dijkstra(Graph g, int vertix);
-
-
+            static void bfs(const Graph& graph, int startVertex);
     };
 }
 
