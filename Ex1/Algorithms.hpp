@@ -14,7 +14,7 @@ namespace graph {
         public:
             static Graph bfs(const Graph& graph, int startVertex);
             static Graph dfs(const Graph& graph, int startVertex);
-            static void dijkstra(const Graph& graph, int startVertex);
+            static Graph dijkstra(const Graph& graph, int startVertex);
     };
 }
 

@@ -27,8 +27,14 @@ int main(){
     g2.print_graph();
 
     std::cout << "\nafter DFS;\n";
+
     Graph g3 = Algorithms::dfs(g,0);
     g3.print_graph();
+
+    std::cout << "\nafter Dijkstra;\n";
+
+    Graph g4 = Algorithms::dijkstra(g,0);
+    g4.print_graph();
 
 
 

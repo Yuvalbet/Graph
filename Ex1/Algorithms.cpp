@@ -75,58 +75,58 @@ namespace graph {
         return tree;  // החזרת עץ DFS
     }
 
-    
-    void Algorithms::dijkstra(const Graph& graph, int startVertex){
+
+    Graph Algorithms::dijkstra(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
         int* distances = new int[vertices];
-        //מערך לבדיקת ביקור בצמתים
         bool* visited = new bool[vertices]{false};
-        //יצירת תור עדיפויות בגודל מספר הצמתים
-        PriorityQueue pq(vertices);
+        int* parents = new int[vertices]; // שמירת ההורה של כל קודקוד בעץ
 
-        //מכיוון שאסור להשתמש ב<vector> נגדיר מספר גדול INF
-        const int INF = 999999;
-        //אתחול המרחקים לכל הצמתים
-        for(int i = 0; i < vertices; i++){
-            distances[i] = INF;
-        }
-        distances[startVertex] = 0;
-        //נכניס את הצומת ההתחלתי
-        pq.push(startVertex,0);
+    PriorityQueue pq(vertices);
+    
+    const int INF = 999999;
+    Graph dijkstraTree(vertices); // עץ דייקסטרה המוחזר
 
-        while (!pq.isEmpty()){
-            int current = pq.pop();
+    for (int i = 0; i < vertices; i++) {
+        distances[i] = INF;
+        parents[i] = -1; // ערך התחלתי שמציין שאין הורה
+    }
+    
+    distances[startVertex] = 0;
+    pq.push(startVertex, 0);
 
-            if(visited[current])
-                continue;
+    while (!pq.isEmpty()) {
+        int current = pq.pop();
 
+        if (visited[current]) continue;
             visited[current] = true;
-                 
-            //נעבור על כל השכנים של הצומת הנוכחי
-            Node* temp = graph.getNeighbors(current);
-            while (temp){
-                int neighbor = temp->id;
-                int weight = temp->weight;
+        
+        Node* temp = graph.getNeighbors(current);
+        while (temp) {
+            int neighbor = temp->id;
+            int weight = temp->weight;
 
-                if (!visited[neighbor] && distances[current] + weight < distances[neighbor]){
-                    distances[neighbor] = distances[current] + weight;
-                    pq.push(neighbor, distances[neighbor]);
-                }
-                temp = temp->next;  
+            if (!visited[neighbor] && distances[current] + weight < distances[neighbor]) {
+                distances[neighbor] = distances[current] + weight;
+                parents[neighbor] = current; // שמירת האב של הקודקוד
+                pq.push(neighbor, distances[neighbor]);
             }
+            temp = temp->next;
         }
-        //הדפסת המרחקים מהצומת ההתחלתי
-        std::cout << "Dijkstra's shortest paths from vertex" << startVertex << ":\n";
-        for (int  i = 0; i < vertices; i++){
-            if (distances[i] == INF)
-                std::cout << "To " << i << ": No path" << std::endl;
-            else
-                std::cout << "To " << i << ": " << distances[i] << std::endl;
-        }
-        
-        delete[] distances;
-        delete[] visited;
-        
     }
 
+    // בניית עץ דייקסטרה מהתוצאות
+    for (int i = 0; i < vertices; i++) {
+        if (parents[i] != -1) { 
+            // הוספת קשת לעץ רק אם לקודקוד יש הורה (כלומר, נמצא במסלול)
+            dijkstraTree.addOneEdge(parents[i], i, distances[i] - distances[parents[i]]);
+        }
+    }
+
+    delete[] distances;
+    delete[] visited;
+    delete[] parents;
+
+    return dijkstraTree;
+}
 }
