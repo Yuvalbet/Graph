@@ -129,4 +129,59 @@ namespace graph {
 
     return dijkstraTree;
 }
+
+    Graph Algorithms::prim(const Graph& graph) {
+    int vertices = graph.getVertices();
+    Graph mst(vertices); // יצירת גרף חדש עבור עץ פורש מינימלי
+
+    int* parent = new int[vertices];  // לשמירת אב של כל צומת
+    int* key = new int[vertices];     // משקל מינימלי לכל צומת
+    bool* inMST = new bool[vertices]{false}; // בדיקה אם צומת ב-MST
+
+    PriorityQueue pq(vertices);
+
+    // אתחול המערכים
+    for (int i = 0; i < vertices; i++) {
+        key[i] = 999999; // ערך גבוה המדמה אינסוף
+        parent[i] = -1;  // אין הורה בתחילה
+    }
+
+    // מתחילים מצומת 0 (אפשר להתחיל מכל צומת)
+    key[0] = 0;
+    pq.push(0, 0);
+
+    while (!pq.isEmpty()) {
+        int u = pq.pop(); // הצומת עם המשקל המינימלי
+
+        inMST[u] = true;
+
+        // מעבר על כל השכנים של u
+        Node* temp = graph.getNeighbors(u);
+        while (temp) {
+            int v = temp->id;
+            int weight = temp->weight;
+
+            if (!inMST[v] && weight < key[v]) { // אם הצומת לא ב-MST ומשקלו קטן מהמשקל הנוכחי
+                key[v] = weight;
+                parent[v] = u;
+                pq.decreaseKey(v, weight);
+                pq.push(v, weight);
+            }
+            temp = temp->next;
+        }
+    }
+
+    // הוספת הצלעות לעץ ה-MST
+    for (int i = 1; i < vertices; i++) {
+        if (parent[i] != -1) {
+            mst.addEdge(parent[i], i, key[i]); // גרף לא מכוון
+        }
+    }
+
+    delete[] parent;
+    delete[] key;
+    delete[] inMST;
+
+    return mst;
+}
 }

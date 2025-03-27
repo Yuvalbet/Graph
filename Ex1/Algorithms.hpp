@@ -15,6 +15,7 @@ namespace graph {
             static Graph bfs(const Graph& graph, int startVertex);
             static Graph dfs(const Graph& graph, int startVertex);
             static Graph dijkstra(const Graph& graph, int startVertex);
+            static Graph prim(const Graph& graph);
     };
 }
 

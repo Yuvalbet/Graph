@@ -36,6 +36,11 @@ int main(){
     Graph g4 = Algorithms::dijkstra(g,0);
     g4.print_graph();
 
+    std::cout << "\nafter Prim;\n";
+
+    Graph g5 = Algorithms::prim(g);
+    g5.print_graph();
+
 
 
     
