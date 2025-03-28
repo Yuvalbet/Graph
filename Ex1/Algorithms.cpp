@@ -40,40 +40,58 @@ namespace graph {
     }
 
 
-
     Graph Algorithms::dfs(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
         bool* visited = new bool[vertices]{false};  // מערך ביקור
         Stack stack(vertices);  // מחסנית עבור DFS
-        Graph tree(vertices);  // יצירת גרף חדש עבור עץ DFS
-    
+        Graph tree(vertices);  // יצירת עץ DFS מכוון
+
+        int* parent = new int[vertices];  // מערך לזיהוי ההורה של כל צומת
+        for (int i = 0; i < vertices; i++) {
+            parent[i] = -1;  // אתחול - אין הורה לצמתים בהתחלה
+        }
+
         stack.push(startVertex);  // הכנסת הצומת ההתחלתי
-    
+
         while (!stack.isEmpty()) {
             int current = stack.pop();
-    
+
             if (!visited[current]) {
                 visited[current] = true;
-            }
-    
-            Node* temp = graph.getAdjList()[current];  // קבלת רשימת שכנים
-    
-            while (temp) {
-                int neighbor = temp->id;
-                int weight = temp->weight;  // שמירת המשקל המקורי (למרות שהוא לא חשוב ל-DFS)
-    
-                if (!visited[neighbor]) {
-                    stack.push(neighbor);
-                    tree.addOneEdge(current, neighbor, weight);  // הוספת הצלע לעץ DFS
+
+                // אם זה לא הצומת ההתחלתי, נוסיף קשת בגרף החדש
+                if (parent[current] != -1) {
+                    int parentVertex = parent[current];
+
+                    // מציאת המשקל מהגרף המקורי
+                    Node* temp = graph.getNeighbors(parentVertex);
+                    while (temp) {
+                        if (temp->id == current) {
+                            tree.addOneEdge(parentVertex, current, temp->weight); // הוספת קשת מכוונת
+                            break;
+                        }
+                        temp = temp->next;
+                    }
                 }
-    
-                temp = temp->next;
+
+                // מעבר על השכנים של הצומת הנוכחי
+                Node* temp = graph.getNeighbors(current);
+                while (temp) {
+                    int neighbor = temp->id;
+                    if (!visited[neighbor]) {
+                        stack.push(neighbor);
+                        parent[neighbor] = current;  // שמירת האב של הצומת
+                    }
+                    temp = temp->next;
+                }
             }
         }
-    
+
         delete[] visited;
-        return tree;  // החזרת עץ DFS
+        delete[] parent;
+        return tree;  // החזרת עץ DFS מכוון
     }
+
 
 
     Graph Algorithms::dijkstra(const Graph& graph, int startVertex) {
