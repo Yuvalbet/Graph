@@ -1,4 +1,7 @@
 #include "Algorithms.hpp"
+#include "Graph.hpp"
+#include "UnionFind.hpp"
+#include "BubbleSort.hpp"
 #include <iostream>
 
 namespace graph {
@@ -202,4 +205,48 @@ namespace graph {
 
     return mst;
 }
+
+
+
+    Graph Algorithms::kruskal(Graph& g) {
+    int vertices = g.getVertices();
+    int edgeCount = 0;
+
+    // 1. קבלת כל הקשתות בגרף והכנסתן למערך
+    Edge* edges = g.getAllEdges(edgeCount);  // קבלת כל הקשתות
+     int index = edgeCount;
+
+    // 2. מיון הקשתות לפי משקל בעזרת מיון בועות
+    BubbleSort::sort(edges, index);  // מיון הקשתות לפי משקל
+
+    // 3. יצירת מבנה Union-Find
+    UnionFind uf(vertices);
+    Graph mst(vertices);  // הגרף של MST
+
+    int mstWeight = 0;  // משקל ה-MST
+
+    // 4. בחירת הקשתות ל-MST
+    for (int i = 0; i < index; ++i) {
+        int src = edges[i].src;
+        int dest = edges[i].dest;
+
+        // אם הצמתים שייכים לקבוצות שונות, נוסיף את הקשת ל-MST
+        if (uf.find(src) != uf.find(dest)) {
+            // הוספת הקשת לגרף ה-MST
+            mst.addEdge(src, dest, edges[i].weight);
+            mstWeight += edges[i].weight;  // הוספת משקל הקשת
+            uf.unionSets(src, dest);  // מאחד את הקבוצות
+        }
+    }
+
+    // הדפסת התוצאה
+    std::cout << "Minimum Spanning Tree edges:" << std::endl;
+    mst.print_graph();  // הדפסת הגרף של ה-MST
+    std::cout << "Total weight of MST: " << mstWeight << std::endl;
+
+    delete[] edges;  // שחרור הזיכרון שהוקצה לקשתות
+
+    return mst;  // החזרת הגרף של ה-MST
 }
+}
+

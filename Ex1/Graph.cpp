@@ -129,4 +129,33 @@ namespace graph {
     Node** Graph::getAdjList() const{
         return adjList;
     }
+
+
+    Edge* Graph::getAllEdges(int& edgeCount) {
+        edgeCount = 0;
+        // סופרים את מספר הקשתות
+        Node** adjList = getAdjList();
+        for (int i = 0; i < vertices; i++) {
+            Node* current = adjList[i];
+            while (current) {
+                edgeCount++;
+                current = current->next;
+            }
+        }
+
+        // ייצוג כל הקשתות במערך של Edge
+    Edge* edges = new Edge[edgeCount];
+    int index = 0;
+        for (int i = 0; i < vertices; i++) {
+            Node* current = adjList[i];
+            while (current) {
+                edges[index].src = i;
+                edges[index].dest = current->id;
+                edges[index].weight = current->weight;
+                index++;
+                current = current->next;
+            }
+        }
+        return edges;
+    }
 }

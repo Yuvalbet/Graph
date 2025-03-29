@@ -41,6 +41,12 @@ int main(){
     Graph g5 = Algorithms::prim(g);
     g5.print_graph();
 
+    std::cout << "\nafter Kruskal;\n";
+
+    Graph g6 = Algorithms::kruskal(g);
+    g6.print_graph();
+
+
 
 
     

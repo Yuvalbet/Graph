@@ -9,6 +9,12 @@ namespace graph {
         Node* next;
     };
 
+    struct Edge {
+        int src;
+        int dest;
+        int weight;
+    };
+
     class Graph {
         private:
         int vertices;
@@ -33,6 +39,9 @@ namespace graph {
 
         int getVertices() const;
         Node** getAdjList() const;
+
+        Edge* getAllEdges(int& edgeCount);
+    
 
     };
 }
