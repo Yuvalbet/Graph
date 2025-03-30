@@ -8,8 +8,11 @@ struct PQNode{
 
 class PriorityQueue{
 private:
+    //מערך המייצג את ערימת המינימום 
     PQNode* heap;
+    //מערך השומר את מיקומי הקודקודים בערימה
     int* positions;
+    //גודל הערימה הנוכחי
     int size;
     int capacity;
 
@@ -18,12 +21,18 @@ private:
 
 
 public:
+    //בנאי
     PriorityQueue(int capacity);
+    //הורס
     ~PriorityQueue();
 
+    //הוספת איבר לתור העדיפויות
     void push(int vertex,int priority);
+    //הוצאת הקודקוד עם העדיפות הגבוהה ביותר (הערך הנמוך ביותר)
     int pop();
+    //עדכון עדיפות של קודקוד קיים
     void decreaseKey(int vertex, int newPriority);
+    //בדיקה אם התור ריק
     bool isEmpty() const;
 };
 

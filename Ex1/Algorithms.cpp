@@ -7,21 +7,28 @@
 namespace graph {
     Graph Algorithms::bfs(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
+        //מערך לבדיקה אילו צמתים כבר בוקרו
         bool* visited = new bool[vertices] {false};
-        Graph tree(vertices); // יצירת עץ BFS ריק
+        // יצירת גרף חדש שיכיל את עץ הbfs
+        Graph tree(vertices); 
 
+        //יצירת תור לעיבוד הצמתים
         Queue q(vertices);
+        //סימון הצומת ההתחלתי כבוצע
         visited[startVertex] = true;
+        //הכנסה לתור של הצומת ההתחלתי
         q.enqueue(startVertex);
 
         
         while (!q.isEmpty()) {
+            //שליפת הצומת הראשון מהתור
             int current = q.dequeue();
             
 
             // מעבר על השכנים של הצומת הנוכחי
             Node* temp = graph.getAdjList()[current];
 
+            //מעבר על כל השכנים של הצומת הנוכחי
             while (temp) {
                 int neighbor = temp->id;
                 int weight = temp->weight; // שומרים את המשקל המקורי
@@ -30,14 +37,14 @@ namespace graph {
                     visited[neighbor] = true;
                     q.enqueue(neighbor);
 
-                    // הוספת הקשת לעץ ה-BFS עם המשקל המקורי
+                    // הוספת הקשת בין הצומת הנוכחי לשכן שלו לעץ הbfs
                     tree.addOneEdge(current, neighbor, weight);
                 }
+                //מעבר לשכן הבא
                 temp = temp->next;
             }
         }
-        std::cout << std::endl;
-
+        //שחרור זכרון
         delete[] visited;
         return tree;
     }
@@ -45,16 +52,21 @@ namespace graph {
 
     Graph Algorithms::dfs(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
-        bool* visited = new bool[vertices]{false};  // מערך ביקור
-        Stack stack(vertices);  // מחסנית עבור DFS
-        Graph tree(vertices);  // יצירת עץ DFS מכוון
+        //יצירת מערך ביקור לכל הצמתים, מאותחל בfalse
+        bool* visited = new bool[vertices]{false};
+        //מחסנית לניהול סדר הביקור בצמתים
+        Stack stack(vertices);
+        Graph tree(vertices);
 
-        int* parent = new int[vertices];  // מערך לזיהוי ההורה של כל צומת
+        // מערך לזיהוי ההורה של כל צומת
+        int* parent = new int[vertices]; 
         for (int i = 0; i < vertices; i++) {
-            parent[i] = -1;  // אתחול - אין הורה לצמתים בהתחלה
+             // אתחול - אין הורה לצמתים בהתחלה
+            parent[i] = -1; 
         }
 
-        stack.push(startVertex);  // הכנסת הצומת ההתחלתי
+        // הכנסת הצומת ההתחלתי
+        stack.push(startVertex); 
 
         while (!stack.isEmpty()) {
             int current = stack.pop();
@@ -83,7 +95,8 @@ namespace graph {
                     int neighbor = temp->id;
                     if (!visited[neighbor]) {
                         stack.push(neighbor);
-                        parent[neighbor] = current;  // שמירת האב של הצומת
+                         //עדכון ההורה של הצומת השכן
+                        parent[neighbor] = current; 
                     }
                     temp = temp->next;
                 }
@@ -99,18 +112,23 @@ namespace graph {
 
     Graph Algorithms::dijkstra(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
+        //מערך מרחקים
         int* distances = new int[vertices];
+        //מערך ביקורים
         bool* visited = new bool[vertices]{false};
-        int* parents = new int[vertices]; // שמירת ההורה של כל קודקוד בעץ
+        //מערך הורים לצורך שחזור המסלול
+        int* parents = new int[vertices]; 
 
+    //תור עדיפויות לניהול הצמתים לבדיקה
     PriorityQueue pq(vertices);
-    
     const int INF = 999999;
-    Graph dijkstraTree(vertices); // עץ דייקסטרה המוחזר
+     // עץ דייקסטרה המוחזר
+    Graph dijkstraTree(vertices);
 
     for (int i = 0; i < vertices; i++) {
         distances[i] = INF;
-        parents[i] = -1; // ערך התחלתי שמציין שאין הורה
+         // ערך התחלתי שמציין שאין הורה
+        parents[i] = -1;
     }
     
     distances[startVertex] = 0;
@@ -129,7 +147,8 @@ namespace graph {
 
             if (!visited[neighbor] && distances[current] + weight < distances[neighbor]) {
                 distances[neighbor] = distances[current] + weight;
-                parents[neighbor] = current; // שמירת האב של הקודקוד
+                 // שמירת האב של הקודקוד
+                parents[neighbor] = current;
                 pq.push(neighbor, distances[neighbor]);
             }
             temp = temp->next;
@@ -153,18 +172,24 @@ namespace graph {
 
     Graph Algorithms::prim(const Graph& graph) {
     int vertices = graph.getVertices();
-    Graph mst(vertices); // יצירת גרף חדש עבור עץ פורש מינימלי
+    // יצירת גרף חדש עבור עץ פורש מינימלי
+    Graph mst(vertices);
 
-    int* parent = new int[vertices];  // לשמירת אב של כל צומת
-    int* key = new int[vertices];     // משקל מינימלי לכל צומת
-    bool* inMST = new bool[vertices]{false}; // בדיקה אם צומת ב-MST
+    // לשמירת אב של כל צומת
+    int* parent = new int[vertices]; 
+    // משקל מינימלי לכל צומת
+    int* key = new int[vertices];    
+    // בדיקה אם צומת ב-MST
+    bool* inMST = new bool[vertices]{false};
 
     PriorityQueue pq(vertices);
 
     // אתחול המערכים
     for (int i = 0; i < vertices; i++) {
-        key[i] = 999999; // ערך גבוה המדמה אינסוף
-        parent[i] = -1;  // אין הורה בתחילה
+        // ערך גבוה המדמה אינסוף
+        key[i] = 999999;
+        // אין הורה בתחילה
+        parent[i] = -1;
     }
 
     // מתחילים מצומת 0 (אפשר להתחיל מכל צומת)
@@ -172,7 +197,8 @@ namespace graph {
     pq.push(0, 0);
 
     while (!pq.isEmpty()) {
-        int u = pq.pop(); // הצומת עם המשקל המינימלי
+        // הצומת עם המשקל המינימלי
+        int u = pq.pop();
 
         inMST[u] = true;
 
@@ -182,7 +208,8 @@ namespace graph {
             int v = temp->id;
             int weight = temp->weight;
 
-            if (!inMST[v] && weight < key[v]) { // אם הצומת לא ב-MST ומשקלו קטן מהמשקל הנוכחי
+            // אם הצומת לא ב-MST ומשקלו קטן מהמשקל הנוכחי
+            if (!inMST[v] && weight < key[v]) {
                 key[v] = weight;
                 parent[v] = u;
                 pq.decreaseKey(v, weight);
@@ -195,7 +222,8 @@ namespace graph {
     // הוספת הצלעות לעץ ה-MST
     for (int i = 1; i < vertices; i++) {
         if (parent[i] != -1) {
-            mst.addEdge(parent[i], i, key[i]); // גרף לא מכוון
+            // גרף לא מכוון
+            mst.addEdge(parent[i], i, key[i]);
         }
     }
 
@@ -209,23 +237,26 @@ namespace graph {
 
 
     Graph Algorithms::kruskal(Graph& g) {
+    //מספר הצמתים בגרף
     int vertices = g.getVertices();
     int edgeCount = 0;
 
-    // 1. קבלת כל הקשתות בגרף והכנסתן למערך
-    Edge* edges = g.getAllEdges(edgeCount);  // קבלת כל הקשתות
+    // קבלת כל הקשתות בגרף והכנסתן למערך
+    Edge* edges = g.getAllEdges(edgeCount); 
      int index = edgeCount;
 
-    // 2. מיון הקשתות לפי משקל בעזרת מיון בועות
-    BubbleSort::sort(edges, index);  // מיון הקשתות לפי משקל
+    // מיון הקשתות לפי משקל בעזרת מיון בועות
+    BubbleSort::sort(edges, index); 
 
-    // 3. יצירת מבנה Union-Find
+    // יצירת מבנה Union-Find
     UnionFind uf(vertices);
-    Graph mst(vertices);  // הגרף של MST
+    // הגרף של MST
+    Graph mst(vertices);
 
-    int mstWeight = 0;  // משקל ה-MST
+     // משתנה לשמירת משקל הmst
+    int mstWeight = 0; 
 
-    // 4. בחירת הקשתות ל-MST
+    // בחירת הקשתות ל-MST
     for (int i = 0; i < index; ++i) {
         int src = edges[i].src;
         int dest = edges[i].dest;
@@ -234,19 +265,16 @@ namespace graph {
         if (uf.find(src) != uf.find(dest)) {
             // הוספת הקשת לגרף ה-MST
             mst.addEdge(src, dest, edges[i].weight);
-            mstWeight += edges[i].weight;  // הוספת משקל הקשת
-            uf.unionSets(src, dest);  // מאחד את הקבוצות
+            // הוספת משקל הקשת
+            mstWeight += edges[i].weight; 
+            // מאחד את קבוצות הצמתים
+            uf.unionSets(src, dest);
         }
     }
-
-    // הדפסת התוצאה
-    std::cout << "Minimum Spanning Tree edges:" << std::endl;
-    mst.print_graph();  // הדפסת הגרף של ה-MST
-    std::cout << "Total weight of MST: " << mstWeight << std::endl;
-
-    delete[] edges;  // שחרור הזיכרון שהוקצה לקשתות
-
-    return mst;  // החזרת הגרף של ה-MST
+    // שחרור הזיכרון שהוקצה לקשתות
+    delete[] edges; 
+    // החזרת הגרף של ה-MST
+    return mst;
 }
 }
 
