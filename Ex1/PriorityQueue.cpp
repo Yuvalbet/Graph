@@ -10,7 +10,18 @@ PriorityQueue::PriorityQueue(int capacity){
     //מערך לשמירת מיקומי הצמתים בערימה
     positions = new int[capacity];
     size = 0;
+
+    //זריקת שגיאה במקרה שהקצאת הזכרון נכשלה
+    if(!heap || !positions){
+        std::cout << "Error: Memory allocation failed in PriorityQueue .\n";
+        delete[] heap;
+        delete[] positions;
+        heap = nullptr;
+        positions = nullptr;
+    }
+        
 }
+    
 
 //בנאי הורס המשחרר את הזכרון הדינמי
 PriorityQueue::~PriorityQueue(){
@@ -57,6 +68,12 @@ void PriorityQueue::heapifyDown(int index){
 
 //הוספת צומת לתור העדיפויות
 void PriorityQueue::push(int vertex, int priority){
+    if(size >= capacity){
+        //זריקת שגיאה מכיוון שהקיבולת מלאה כבר ואי אפשר להוסיף עוד איבר
+        std::cout << "Error: PriorityQueue is full.\n";
+        return;
+    }
+        
     heap[size] = {vertex, priority};
     positions[vertex] = size;
     heapifyUp(size);
@@ -69,19 +86,26 @@ int PriorityQueue::pop(){
         return -1;
 
     int vertex = heap[0].vertex;
-    heap[0] = heap[size-1];
-    positions[heap[0].vertex] = 0;
-    size--;
-    heapifyDown(0);
-    heap[size] = {};
+    size--;  // Reduce the size first
 
+    if (size > 0) {  // Ensure there is still an element before accessing heap[0]
+        heap[0] = heap[size];  // Move the last element to the root
+        positions[heap[0].vertex] = 0;
+        heapifyDown(0);
+    }
+    
     return vertex;
 }
 
+
 //שינוי עדיפות של צומת קיים
 void PriorityQueue::decreaseKey(int vertex, int newPriority){
-    if(vertex < 0 || vertex >= capacity || positions[vertex] >= size)
-    return;
+    if(vertex < 0 || vertex >= capacity || positions[vertex] >= size){
+        //זריקת שגיאה- ערך לא חוקי
+        std::cout << "Error: Invalid vertex for decreaseKey.\n";
+        return;
+    }
+    
     int index = positions[vertex];
     heap[index].priority = newPriority;
     heapifyUp(index);

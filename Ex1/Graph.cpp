@@ -94,20 +94,26 @@ namespace graph {
     }
 
     void Graph::print_graph() const {
-        for (int i = 0; i < vertices; i++) {
-            std::cout << "Vertex " << i << ": ";
-            Node* current = adjList[i];
-    
-            if(!current){
-                std::cout << "No children";
-            }else{
-                while (current) {
-                    std::cout << "(" << current->id << ", " << current->weight << ") ";  // אם הקודקוד לא מחובר לאף צומת
-                    current = current->next;
+        if(vertices > 0){
+            for (int i = 0; i < vertices; i++) {
+                std::cout << "Vertex " << i << ": ";
+                Node* current = adjList[i];
+        
+                if(!current){
+                    std::cout << "No children";
+                }else{
+                    while (current) {
+                        std::cout << "(" << current->id << ", " << current->weight << ") ";  // אם הקודקוד לא מחובר לאף צומת
+                        current = current->next;
+                    }
                 }
+                std::cout << std::endl;
             }
-            std::cout << std::endl;
         }
+        else{
+            std::cout << "empty Graph" << std::endl;
+        }
+        
     }
 
 
@@ -131,7 +137,7 @@ namespace graph {
     }
 
 
-    Edge* Graph::getAllEdges(int& edgeCount) {
+    Edge* Graph::getAllEdges(int& edgeCount) const{
         edgeCount = 0;
         // סופרים את מספר הקשתות
         Node** adjList = getAdjList();
@@ -156,6 +162,6 @@ namespace graph {
                 current = current->next;
             }
         }
-        return edges;
+    return edges;
     }
 }

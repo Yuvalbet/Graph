@@ -49,7 +49,7 @@ namespace graph {
         //פונקציה שמחזירה את רשימת השכינויות
         Node** getAdjList() const;
         //פונקציה המחזירה את כל הצלעות בגרף כמערך של Edge
-        Edge* getAllEdges(int& edgeCount);
+        Edge* getAllEdges(int& edgeCount) const;
     
 
     };

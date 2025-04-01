@@ -33,8 +33,15 @@ int main(){
 
     std::cout << "\nafter Dijkstra;\n";
 
-    Graph g4 = Algorithms::dijkstra(g,0);
-    g4.print_graph();
+    Graph* g4 = Algorithms::dijkstra(g,0);
+    if(g4 == nullptr){
+        std::cerr << "A problem has occured in the tree" << std::endl;
+    }
+    else{
+        Graph dijkstratree = (*g4);
+        dijkstratree.print_graph();
+    }
+    
 
     std::cout << "\nafter Prim;\n";
 

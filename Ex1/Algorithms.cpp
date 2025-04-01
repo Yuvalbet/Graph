@@ -108,69 +108,84 @@ namespace graph {
         return tree;  // החזרת עץ DFS מכוון
     }
 
-
-
-    Graph Algorithms::dijkstra(const Graph& graph, int startVertex) {
-        int vertices = graph.getVertices();
-        //מערך מרחקים
-        int* distances = new int[vertices];
-        //מערך ביקורים
-        bool* visited = new bool[vertices]{false};
-        //מערך הורים לצורך שחזור המסלול
-        int* parents = new int[vertices]; 
-
-    //תור עדיפויות לניהול הצמתים לבדיקה
-    PriorityQueue pq(vertices);
-    const int INF = 999999;
-     // עץ דייקסטרה המוחזר
-    Graph dijkstraTree(vertices);
-
-    for (int i = 0; i < vertices; i++) {
-        distances[i] = INF;
-         // ערך התחלתי שמציין שאין הורה
-        parents[i] = -1;
-    }
-    
-    distances[startVertex] = 0;
-    pq.push(startVertex, 0);
-
-    while (!pq.isEmpty()) {
-        int current = pq.pop();
-
-        if (visited[current]) continue;
-            visited[current] = true;
-        
-        Node* temp = graph.getNeighbors(current);
-        while (temp) {
-            int neighbor = temp->id;
-            int weight = temp->weight;
-
-            if (!visited[neighbor] && distances[current] + weight < distances[neighbor]) {
-                distances[neighbor] = distances[current] + weight;
-                 // שמירת האב של הקודקוד
-                parents[neighbor] = current;
-                pq.push(neighbor, distances[neighbor]);
+Graph* Algorithms::dijkstra(const Graph& graph, int startVertex) {
+    int vertices = graph.getVertices();
+    if(startVertex < 0 || startVertex >= vertices){
+            std::cout << "Error: Start vertex is out of range. \n" << std::endl;
+            return nullptr;
+        }
+        //בדיקה אם קיימת קשת עם משקל שלילי
+        for(int i = 0; i < vertices; i++){
+            Node* temp = graph.getNeighbors(i);
+            while (temp){
+                bool ans = temp->weight < 0;
+               if(temp->weight < 0){
+                std::cout << "Error: Dijkstra cannot  handle negative edge weight." << std::endl;
+                return nullptr;
+               }
+               temp = temp -> next;
             }
-            temp = temp->next;
         }
-    }
+            
+    //מערך מרחקים
+    int* distances = new int[vertices];
+    //מערך ביקורים
+    bool* visited = new bool[vertices]{false};
+    //מערך הורים לצורך שחזור המסלול
+    int* parents = new int[vertices]; 
 
-    // בניית עץ דייקסטרה מהתוצאות
-    for (int i = 0; i < vertices; i++) {
-        if (parents[i] != -1) { 
-            // הוספת קשת לעץ רק אם לקודקוד יש הורה (כלומר, נמצא במסלול)
-            dijkstraTree.addOneEdge(parents[i], i, distances[i] - distances[parents[i]]);
-        }
-    }
+//תור עדיפויות לניהול הצמתים לבדיקה
+PriorityQueue pq(vertices);
+const int INF = 999999;
+ // עץ דייקסטרה המוחזר
+ Graph* dijkstraTree = new Graph(vertices);
 
-    delete[] distances;
-    delete[] visited;
-    delete[] parents;
-
-    return dijkstraTree;
+for (int i = 0; i < vertices; i++) {
+    distances[i] = INF;
+     // ערך התחלתי שמציין שאין הורה
+    parents[i] = -1;
 }
 
-    Graph Algorithms::prim(const Graph& graph) {
+distances[startVertex] = 0;
+pq.push(startVertex, 0);
+
+while (!pq.isEmpty()) {
+    int current = pq.pop();
+
+    if (visited[current]) continue;
+        visited[current] = true;
+    
+    Node* temp = graph.getNeighbors(current);
+    while (temp) {
+        int neighbor = temp->id;
+        int weight = temp->weight;
+
+        if (!visited[neighbor] && distances[current] + weight < distances[neighbor]) {
+            distances[neighbor] = distances[current] + weight;
+             // שמירת האב של הקודקוד
+            parents[neighbor] = current;
+            pq.push(neighbor, distances[neighbor]);
+        }
+        temp = temp->next;
+    }
+}
+
+// בניית עץ דייקסטרה מהתוצאות
+for (int i = 0; i < vertices; i++) {
+    if (parents[i] != -1) { 
+        // הוספת קשת לעץ רק אם לקודקוד יש הורה (כלומר, נמצא במסלול)
+        dijkstraTree->addOneEdge(parents[i], i, distances[i] - distances[parents[i]]);
+    }
+}
+
+delete[] distances;
+delete[] visited;
+delete[] parents;
+
+return dijkstraTree;
+}
+
+Graph Algorithms::prim(const Graph& graph) {
     int vertices = graph.getVertices();
     // יצירת גרף חדש עבור עץ פורש מינימלי
     Graph mst(vertices);
