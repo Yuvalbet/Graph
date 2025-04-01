@@ -39,7 +39,7 @@ int main(){
     }
     else{
         Graph dijkstratree = (*g4);
-    dijkstratree.print_graph();
+        dijkstratree.print_graph();
     }
     
 
@@ -52,6 +52,8 @@ int main(){
 
     Graph g6 = Algorithms::kruskal(g);
     g6.print_graph();
+
+    
 
 
 

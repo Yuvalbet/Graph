@@ -1,8 +1,12 @@
 #include "Algorithms.hpp"
 #include "Graph.hpp"
+#include "Queue.hpp"
+#include "Stack.hpp"
+#include "PriorityQueue.hpp"
 #include "UnionFind.hpp"
 #include "BubbleSort.hpp"
 #include <iostream>
+
 
 namespace graph {
     Graph Algorithms::bfs(const Graph& graph, int startVertex) {
@@ -118,7 +122,6 @@ Graph* Algorithms::dijkstra(const Graph& graph, int startVertex) {
         for(int i = 0; i < vertices; i++){
             Node* temp = graph.getNeighbors(i);
             while (temp){
-                bool ans = temp->weight < 0;
                if(temp->weight < 0){
                 std::cout << "Error: Dijkstra cannot  handle negative edge weight." << std::endl;
                 return nullptr;
