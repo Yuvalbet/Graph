@@ -30,8 +30,6 @@ public:
     void push(int vertex,int priority);
     //הוצאת הקודקוד עם העדיפות הגבוהה ביותר (הערך הנמוך ביותר)
     int pop();
-    //עדכון עדיפות של קודקוד קיים
-    void decreaseKey(int vertex, int newPriority);
     //בדיקה אם התור ריק
     bool isEmpty() const;
 };

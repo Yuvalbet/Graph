@@ -97,19 +97,6 @@ int PriorityQueue::pop(){
     return vertex;
 }
 
-
-//שינוי עדיפות של צומת קיים
-void PriorityQueue::decreaseKey(int vertex, int newPriority){
-    if(vertex < 0 || vertex >= capacity || positions[vertex] >= size){
-        //זריקת שגיאה- ערך לא חוקי
-        std::cout << "Error: Invalid vertex for decreaseKey.\n";
-        return;
-    }
-    
-    int index = positions[vertex];
-    heap[index].priority = newPriority;
-    heapifyUp(index);
-}
 //בדיקה אם התור ריק
 bool PriorityQueue::isEmpty() const{
     return size == 0;

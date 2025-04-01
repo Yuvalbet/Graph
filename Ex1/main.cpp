@@ -39,7 +39,7 @@ int main(){
     }
     else{
         Graph dijkstratree = (*g4);
-        dijkstratree.print_graph();
+    dijkstratree.print_graph();
     }
     
 

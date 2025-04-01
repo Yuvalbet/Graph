@@ -227,7 +227,6 @@ Graph Algorithms::prim(const Graph& graph) {
             if (!inMST[v] && weight < key[v]) {
                 key[v] = weight;
                 parent[v] = u;
-                pq.decreaseKey(v, weight);
                 pq.push(v, weight);
             }
             temp = temp->next;
