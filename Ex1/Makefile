@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -std=c++11 -Wall -g
 
 
-all: Main
+all: Main Test
 
 Main: Graph.o Algorithms.o PriorityQueue.o Queue.o Stack.o UnionFind.o BubbleSort.o main.o
 	$(CC) $(CFLAGS) -o Main Graph.o Algorithms.o PriorityQueue.o Queue.o Stack.o UnionFind.o BubbleSort.o main.o
@@ -31,11 +31,20 @@ UnionFind.o: UnionFind.cpp UnionFind.hpp
 BubbleSort.o: BubbleSort.cpp BubbleSort.hpp
 	$(CC) $(CFLAGS) -c BubbleSort.cpp 
 
+Test: Test.o Graph.o Algorithms.o PriorityQueue.o Queue.o Stack.o UnionFind.o BubbleSort.o
+	$(CC) $(CFLAGS) -o Test Test.o Graph.o Algorithms.o PriorityQueue.o Queue.o Stack.o UnionFind.o BubbleSort.o
+
+Test.o: Tests.cpp doctest.h Algorithms.hpp Graph.hpp UnionFind.hpp BubbleSort.hpp Queue.hpp Stack.hpp PriorityQueue.hpp
+	$(CC) $(CFLAGS) -c Tests.cpp -o Test.o
+
+
+test: Test
+	./Test
 
 clean:
-	rm -f main.o Graph.o Algorithms.o PriorityQueue.o Queue.o Stack.o UnionFind.o BubbleSort.o Main *.o
+	rm -f main.o Graph.o Algorithms.o PriorityQueue.o Queue.o Stack.o UnionFind.o BubbleSort.o Main Test *.o
 
 valgrind: Main
 	valgrind --leak-check=full --show-leak-kinds=all ./Main
 
-.PHONY: all clean valgrind
+.PHONY: all clean valgrind 

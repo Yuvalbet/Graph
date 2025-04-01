@@ -50,6 +50,7 @@ namespace graph {
         Node** getAdjList() const;
         //פונקציה המחזירה את כל הצלעות בגרף כמערך של Edge
         Edge* getAllEdges(int& edgeCount) const;
+
     
 
     };
