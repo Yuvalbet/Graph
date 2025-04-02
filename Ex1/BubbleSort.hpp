@@ -1,13 +1,16 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #ifndef BUBBLESORT_HPP
 #define BUBBLESORT_HPP
 
 #include "Graph.hpp"
 
 namespace graph {
-    //מחלקה המספקת אלגוריתם מיון בועות למיון מערך של קשתות בגרף
+    //A class that provides a bubble sort algorithm for sorting an array of edges in a graph
     class BubbleSort {
     public:
-        //ממיין מערך של קשתות בסדר עולה לפי משקלן
+        //Sorts an array of edges in ascending order by their weight
         static void sort(Edge* edges, int edgeCount);
     };
 }

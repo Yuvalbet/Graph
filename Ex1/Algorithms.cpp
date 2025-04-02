@@ -1,3 +1,6 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #include "Algorithms.hpp"
 #include "Graph.hpp"
 #include "Queue.hpp"
@@ -11,44 +14,44 @@
 namespace graph {
     Graph Algorithms::bfs(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
-        //מערך לבדיקה אילו צמתים כבר בוקרו
+        //Array to check which nodes have already been checked
         bool* visited = new bool[vertices] {false};
-        // יצירת גרף חדש שיכיל את עץ הbfs
+        // Create a new graph that will contain the bfs tree
         Graph tree(vertices); 
-
-        //יצירת תור לעיבוד הצמתים
+        //Create a queue for processing nodes
         Queue q(vertices);
-        //סימון הצומת ההתחלתי כבוצע
+        //Mark the starting node as done
         visited[startVertex] = true;
-        //הכנסה לתור של הצומת ההתחלתי
+        //Enqueue the starting node
         q.enqueue(startVertex);
 
         
         while (!q.isEmpty()) {
-            //שליפת הצומת הראשון מהתור
+            //Retrieve the first node from the queue
             int current = q.dequeue();
             
 
-            // מעבר על השכנים של הצומת הנוכחי
+            // Traverse the neighbors of the current node
             Node* temp = graph.getAdjList()[current];
 
-            //מעבר על כל השכנים של הצומת הנוכחי
+            // Traverse all neighbors of the current node
             while (temp) {
                 int neighbor = temp->id;
-                int weight = temp->weight; // שומרים את המשקל המקורי
+                // Save the original weight
+                int weight = temp->weight; 
 
                 if (!visited[neighbor]) {
                     visited[neighbor] = true;
                     q.enqueue(neighbor);
 
-                    // הוספת הקשת בין הצומת הנוכחי לשכן שלו לעץ הbfs
+                    // Add the edge between the current node and its neighbor to the bfs tree
                     tree.addOneEdge(current, neighbor, weight);
                 }
-                //מעבר לשכן הבא
+                //Move to the next neighbor
                 temp = temp->next;
             }
         }
-        //שחרור זכרון
+        //Release memory
         delete[] visited;
         return tree;
     }
@@ -56,20 +59,20 @@ namespace graph {
 
     Graph Algorithms::dfs(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
-        //יצירת מערך ביקור לכל הצמתים, מאותחל בfalse
+        //Create a visit array for all nodes, initialized to false
         bool* visited = new bool[vertices]{false};
-        //מחסנית לניהול סדר הביקור בצמתים
+        //Stack for managing the order of visiting nodes
         Stack stack(vertices);
         Graph tree(vertices);
 
-        // מערך לזיהוי ההורה של כל צומת
+        // Array to identify the parent of each node
         int* parent = new int[vertices]; 
         for (int i = 0; i < vertices; i++) {
-             // אתחול - אין הורה לצמתים בהתחלה
+            // Initialization - no parent for nodes at first
             parent[i] = -1; 
         }
 
-        // הכנסת הצומת ההתחלתי
+        // Insert the starting node
         stack.push(startVertex); 
 
         while (!stack.isEmpty()) {
@@ -78,28 +81,29 @@ namespace graph {
             if (!visited[current]) {
                 visited[current] = true;
 
-                // אם זה לא הצומת ההתחלתי, נוסיף קשת בגרף החדש
+                // If this is not the starting node, we will add an edge in the new graph
                 if (parent[current] != -1) {
                     int parentVertex = parent[current];
 
-                    // מציאת המשקל מהגרף המקורי
+                    // Finding the weight from the original graph
                     Node* temp = graph.getNeighbors(parentVertex);
                     while (temp) {
                         if (temp->id == current) {
-                            tree.addOneEdge(parentVertex, current, temp->weight); // הוספת קשת מכוונת
+                            // Add a directed arc
+                            tree.addOneEdge(parentVertex, current, temp->weight); 
                             break;
                         }
                         temp = temp->next;
                     }
                 }
 
-                // מעבר על השכנים של הצומת הנוכחי
+                // Traverse the neighbors of the current node
                 Node* temp = graph.getNeighbors(current);
                 while (temp) {
                     int neighbor = temp->id;
                     if (!visited[neighbor]) {
                         stack.push(neighbor);
-                         //עדכון ההורה של הצומת השכן
+                        //Update the parent of the neighboring node
                         parent[neighbor] = current; 
                     }
                     temp = temp->next;
@@ -109,189 +113,201 @@ namespace graph {
 
         delete[] visited;
         delete[] parent;
-        return tree;  // החזרת עץ DFS מכוון
+        return tree; 
     }
 
-Graph* Algorithms::dijkstra(const Graph& graph, int startVertex) {
-    int vertices = graph.getVertices();
-    if(startVertex < 0 || startVertex >= vertices){
-            std::cout << "Error: Start vertex is out of range. \n" << std::endl;
-            return nullptr;
+    Graph* Algorithms::dijkstra(const Graph& graph, int startVertex) {
+        int vertices = graph.getVertices();
+        if(startVertex < 0 || startVertex >= vertices){
+                std::cout << "Error: Start vertex is out of range. \n" << std::endl;
+                return nullptr;
         }
-        //בדיקה אם קיימת קשת עם משקל שלילי
+        //Check if there is an edge with negative weight
         for(int i = 0; i < vertices; i++){
             Node* temp = graph.getNeighbors(i);
+
             while (temp){
-               if(temp->weight < 0){
-                std::cout << "Error: Dijkstra cannot  handle negative edge weight." << std::endl;
-                return nullptr;
-               }
-               temp = temp -> next;
+
+                if(temp->weight < 0){
+                    std::cout << "Error: Dijkstra cannot  handle negative edge weight." << std::endl;
+                    return nullptr;
+                }
+                temp = temp -> next;
             }
         }
+                
+        //Distance array
+        int* distances = new int[vertices];
+        //Visit array
+        bool* visited = new bool[vertices]{false};
+        //Parent array for route reconstruction
+        int* parents = new int[vertices]; 
+
+        //Priority queue for managing nodes for testing
+        PriorityQueue pq(vertices);
+        const int INF = 999999;
+        // The returned Dijkstra tree
+        Graph* dijkstraTree = new Graph(vertices);
+
+        for (int i = 0; i < vertices; i++) {
+            distances[i] = INF;
+            // Initial value indicating there is no parent
+            parents[i] = -1;
+        }
+
+        distances[startVertex] = 0;
+        pq.push(startVertex, 0);
+
+        while (!pq.isEmpty()) {
+            int current = pq.pop();
+
+            if (visited[current]) continue;
+                visited[current] = true;
             
-    //מערך מרחקים
-    int* distances = new int[vertices];
-    //מערך ביקורים
-    bool* visited = new bool[vertices]{false};
-    //מערך הורים לצורך שחזור המסלול
-    int* parents = new int[vertices]; 
+            Node* temp = graph.getNeighbors(current);
 
-//תור עדיפויות לניהול הצמתים לבדיקה
-PriorityQueue pq(vertices);
-const int INF = 999999;
- // עץ דייקסטרה המוחזר
- Graph* dijkstraTree = new Graph(vertices);
-
-for (int i = 0; i < vertices; i++) {
-    distances[i] = INF;
-     // ערך התחלתי שמציין שאין הורה
-    parents[i] = -1;
-}
-
-distances[startVertex] = 0;
-pq.push(startVertex, 0);
-
-while (!pq.isEmpty()) {
-    int current = pq.pop();
-
-    if (visited[current]) continue;
-        visited[current] = true;
-    
-    Node* temp = graph.getNeighbors(current);
-    while (temp) {
-        int neighbor = temp->id;
-        int weight = temp->weight;
-
-        if (!visited[neighbor] && distances[current] + weight < distances[neighbor]) {
-            distances[neighbor] = distances[current] + weight;
-             // שמירת האב של הקודקוד
-            parents[neighbor] = current;
-            pq.push(neighbor, distances[neighbor]);
-        }
-        temp = temp->next;
-    }
-}
-
-// בניית עץ דייקסטרה מהתוצאות
-for (int i = 0; i < vertices; i++) {
-    if (parents[i] != -1) { 
-        // הוספת קשת לעץ רק אם לקודקוד יש הורה (כלומר, נמצא במסלול)
-        dijkstraTree->addOneEdge(parents[i], i, distances[i] - distances[parents[i]]);
-    }
-}
-
-delete[] distances;
-delete[] visited;
-delete[] parents;
-
-return dijkstraTree;
-}
-
-Graph Algorithms::prim(const Graph& graph) {
-    int vertices = graph.getVertices();
-    // יצירת גרף חדש עבור עץ פורש מינימלי
-    Graph mst(vertices);
-
-    // לשמירת אב של כל צומת
-    int* parent = new int[vertices]; 
-    // משקל מינימלי לכל צומת
-    int* key = new int[vertices];    
-    // בדיקה אם צומת ב-MST
-    bool* inMST = new bool[vertices]{false};
-
-    PriorityQueue pq(vertices);
-
-    // אתחול המערכים
-    for (int i = 0; i < vertices; i++) {
-        // ערך גבוה המדמה אינסוף
-        key[i] = 999999;
-        // אין הורה בתחילה
-        parent[i] = -1;
-    }
-
-    // מתחילים מצומת 0 (אפשר להתחיל מכל צומת)
-    key[0] = 0;
-    pq.push(0, 0);
-
-    while (!pq.isEmpty()) {
-        // הצומת עם המשקל המינימלי
-        int u = pq.pop();
-
-        inMST[u] = true;
-
-        // מעבר על כל השכנים של u
-        Node* temp = graph.getNeighbors(u);
-        while (temp) {
-            int v = temp->id;
-            int weight = temp->weight;
-
-            // אם הצומת לא ב-MST ומשקלו קטן מהמשקל הנוכחי
-            if (!inMST[v] && weight < key[v]) {
-                key[v] = weight;
-                parent[v] = u;
-                pq.push(v, weight);
+            while (temp) {
+                    int neighbor = temp->id;
+                    int weight = temp->weight;
+        
+                    relax(current, neighbor, weight, distances, parents, pq, visited);
+                    
+                    temp = temp->next;
             }
-            temp = temp->next;
+        }
+        
+
+        // Build a Dijkstra tree from the results
+        for (int i = 0; i < vertices; i++) {
+            if (parents[i] != -1) { 
+                // Add an edge to the tree only if the vertex has a parent (i.e., is on the path)
+                dijkstraTree->addOneEdge(parents[i], i, distances[i] - distances[parents[i]]);
+            }
+        }
+
+        delete[] distances;
+        delete[] visited;
+        delete[] parents;
+
+        return dijkstraTree;
+    }
+    // Check if the vertex v has not been visited yet and if the new computed distance is smaller than the current on
+    void Algorithms::relax(int u, int v, int weight, int* distances, int* parents, PriorityQueue& pq, bool* visited) {
+        if (!visited[v] && distances[u] + weight < distances[v]) {
+            // Update the shortest known distance to vertex v
+            distances[v] = distances[u] + weight;
+            // Update the parent of vertex v to be u, indicating the shortest path passes through u
+            parents[v] = u;
+            // Push the updated vertex v into the priority queue with the new distance
+            pq.push(v, distances[v]);
         }
     }
 
-    // הוספת הצלעות לעץ ה-MST
-    for (int i = 1; i < vertices; i++) {
-        if (parent[i] != -1) {
-            // גרף לא מכוון
-            mst.addEdge(parent[i], i, key[i]);
+
+    Graph Algorithms::prim(const Graph& graph) {
+        int vertices = graph.getVertices();
+        // Create a new graph for a minimum spanning tree
+        Graph mst(vertices);
+
+        // To save the parent of each node
+        int* parent = new int[vertices]; 
+        // Minimum weight for each node
+        int* key = new int[vertices];    
+        // Check if node is in MST
+        bool* inMST = new bool[vertices]{false};
+
+        PriorityQueue pq(vertices);
+
+        // Initialize the arrays
+        for (int i = 0; i < vertices; i++) {
+            // High value simulating infinity
+            key[i] = 999999;
+            // No parent initially
+            parent[i] = -1;
         }
+
+        // Start at node 0 (you can start at any node)
+        key[0] = 0;
+        pq.push(0, 0);
+
+        while (!pq.isEmpty()) {
+            // The node with the minimum weight
+            int u = pq.pop();
+
+            inMST[u] = true;
+
+            // Traverse all neighbors of u
+            Node* temp = graph.getNeighbors(u);
+            while (temp) {
+                int v = temp->id;
+                int weight = temp->weight;
+
+                // If the node is not in MST and its weight is less than the current weight
+                if (!inMST[v] && weight < key[v]) {
+                    key[v] = weight;
+                    parent[v] = u;
+                    pq.push(v, weight);
+                }
+                temp = temp->next;
+            }
+        }
+
+        // Adding edges to the MST tree
+        for (int i = 1; i < vertices; i++) {
+            if (parent[i] != -1) {
+                // Undirected graph
+                mst.addEdge(parent[i], i, key[i]);
+            }
+        }
+
+        delete[] parent;
+        delete[] key;
+        delete[] inMST;
+
+        return mst;
     }
-
-    delete[] parent;
-    delete[] key;
-    delete[] inMST;
-
-    return mst;
-}
 
 
 
     Graph Algorithms::kruskal(Graph& g) {
-    //מספר הצמתים בגרף
-    int vertices = g.getVertices();
-    int edgeCount = 0;
+        //Number of nodes in the graph
+        int vertices = g.getVertices();
+        int edgeCount = 0;
 
-    // קבלת כל הקשתות בגרף והכנסתן למערך
-    Edge* edges = g.getAllEdges(edgeCount); 
-     int index = edgeCount;
+        // Get all the edges in the graph and put them into an array
+        Edge* edges = g.getAllEdges(edgeCount); 
+        int index = edgeCount;
 
-    // מיון הקשתות לפי משקל בעזרת מיון בועות
-    BubbleSort::sort(edges, index); 
+        // Sort the edges by weight using bubble sort
+        BubbleSort::sort(edges, index); 
 
-    // יצירת מבנה Union-Find
-    UnionFind uf(vertices);
-    // הגרף של MST
-    Graph mst(vertices);
+        // Create a Union-Find structure
+        UnionFind uf(vertices);
+        // MST graph
+        Graph mst(vertices);
 
-     // משתנה לשמירת משקל הmst
-    int mstWeight = 0; 
+        // Variable to store the weight of the mst
+        int mstWeight = 0; 
 
-    // בחירת הקשתות ל-MST
-    for (int i = 0; i < index; ++i) {
-        int src = edges[i].src;
-        int dest = edges[i].dest;
+        // Selecting the edges for MST
+        for (int i = 0; i < index; ++i) {
+            int src = edges[i].src;
+            int dest = edges[i].dest;
 
-        // אם הצמתים שייכים לקבוצות שונות, נוסיף את הקשת ל-MST
-        if (uf.find(src) != uf.find(dest)) {
-            // הוספת הקשת לגרף ה-MST
-            mst.addEdge(src, dest, edges[i].weight);
-            // הוספת משקל הקשת
-            mstWeight += edges[i].weight; 
-            // מאחד את קבוצות הצמתים
-            uf.unionSets(src, dest);
+            // If the nodes belong to different groups, we add the edge to the MST
+            if (uf.find(src) != uf.find(dest)) {
+                // Adding the edge to the MST graph
+                mst.addEdge(src, dest, edges[i].weight);
+                // Adding the bow weight
+                mstWeight += edges[i].weight; 
+                // Unites the node groups
+                uf.unionSets(src, dest);
+            }
         }
+
+        // Freeing the memory allocated to the edges
+        delete[] edges; 
+        return mst;
     }
-    // שחרור הזיכרון שהוקצה לקשתות
-    delete[] edges; 
-    // החזרת הגרף של ה-MST
-    return mst;
-}
 }
 

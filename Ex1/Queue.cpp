@@ -1,61 +1,65 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #include "Queue.hpp"
 #include <iostream>
 
-//בנאי של המחלקה Queue - מאתחל תור בגודל נתון
+//Constructor of the Queue class - initializes a queue of a given size
 Queue::Queue(int capacity){
-    //שמירת הקיבולת של התור
+    //Maintaining the capacity of the queue
     this->capacity = capacity;
-    //הקצאת זיכרון למערך שמחזיק את הנתונים
+    //Allocate memory for the array that holds the data
     arr = new int[capacity];
-    //מצביע לתחילת התור
     front = 0;
-    //מצביע לסוף התור (מתחיל ב-1- כי אין אברים)
     rear = -1;
-    //מספר האיברים בתור
+    //Number of elements in the queue
     size = 0;
 }
-//הורס- משחרר את הזכרון שהוקצה דינאמית
+
+//Destroys - Frees the dynamically allocated memory
 Queue::~Queue(){
-    //שחרור המערך הדינאמי
     delete[]arr;
 }
-//פונקציה להוספת ערך לסוף התור
+
+//Function to add a value to the end of the queue
 void Queue::enqueue(int value){
-    //בדיקה אם התור מלא
+    //Check if the queue is full
     if (isFull()){
-        std::cerr << "Queue is full!" << std::endl;
+        std::cerr << "Queue is full!" << std::endl; //לבדוק  מה המשמעות של CERR במקום COUT
         return;
     }
-    //הזזת הrear בצורה מעגלית
+    //Moving the rear in a circular motion
     rear = (rear + 1) % capacity;
-    //הכנסה של הערך למקום הפנוי
+    //Insert the value into the free space
     arr[rear] = value;
-    //עדכון גודל התור
+    //Update the queue size
     size++;
 }
-//פונקציה לשליפת הערך מראש התור והסרתו
+//Function to retrieve the value from the head of the queue and remove it
 int Queue::dequeue(){
-    //בדיקה אם התור ריק
+    //Check if the queue is empty
     if (isEmpty()){
-        std::cerr << "Queue is empty!" <<std::endl;
-        //ערך חזרה מיוחד שמציין שהתור ריק
+        std::cerr << "Queue is empty!" <<std::endl; //לבדוק  מה המשמעות של CERR במקום COUT
+        //Special return value indicating that the queue is empty
         return -1;
     }
-    //שמירת הערך שבראש התור
+    //Save the value at the top of the queue
     int value = arr[front];
-    //הזזת הfront בצורה מעגלית
+    //Moving the front in a circular manner
     front = (front + 1) % capacity;
-    //עדכון גודל התור
+    //Update the queue size
     size--;
-    //החזרת הערך שנמחק
+    //Return the deleted value
     return value;
 }
-//פונקציה שבודקת האם התור ריק
+
+//Function that checks if the queue is empty
 bool Queue::isEmpty() const{
     return size == 0;
 }
-//פונקציה שבודקת האם התור מלא
+
+//Function that checks if the queue is full
 bool Queue::isFull() const{
-    //מחזירה true אם התור הגיע לקיבולת המקסימלית
+    //Returns true if the queue has reached maximum capacity
     return size == capacity;
 }

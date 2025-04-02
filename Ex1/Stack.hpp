@@ -1,26 +1,29 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #ifndef STACK_HPP
 #define STACK_HPP
 
 class Stack{
 private:
-    //מערך לאחסון הנתונים
+    //Array for storing data
     int *arr;
-    //האינדקס העליון במחסנית
+    //The top index on the stack
     int top;
-    //גודל המחסנית
+    //Stack size
     int capacity;
 
 public:
-    //בנאי
+    //constructor
     Stack(int capacity);
-    //הורס
+    //Destroys
     ~Stack();
 
-    //הכנסה למחסנית
+    //insert into the stack
     void push(int value);
-    //הוצאה מהמחסנית
+    //Remove from the stack
     int pop();
-    //בדיקה אם המחסנית ריקה 
+    //Check if the cartridge is empty
     bool isEmpty() const;
 };
 

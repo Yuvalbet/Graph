@@ -1,17 +1,19 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #include "PriorityQueue.hpp"
 #include <iostream>
 
-//בנאי של מחלקת התור עדיפויות
-//אתחול המחסנית עם קיבולת מסויימת והקצאת זכרון למבנים פנימיים
+//Constructor of the priority queue class - Initialize the stack with a certain capacity and allocate memory for internal structures
 PriorityQueue::PriorityQueue(int capacity){
     this->capacity = capacity;
-    //ערימת מינימום מבוססת מערך
+    //array-based minimum stack
     heap = new PQNode[capacity];
-    //מערך לשמירת מיקומי הצמתים בערימה
+    //Array for storing node locations on the stack
     positions = new int[capacity];
     size = 0;
 
-    //זריקת שגיאה במקרה שהקצאת הזכרון נכשלה
+    //Throw an error if memory allocation fails
     if(!heap || !positions){
         std::cout << "Error: Memory allocation failed in PriorityQueue .\n";
         delete[] heap;
@@ -23,20 +25,20 @@ PriorityQueue::PriorityQueue(int capacity){
 }
     
 
-//בנאי הורס המשחרר את הזכרון הדינמי
+//Destructor that releases the dynamic memory
 PriorityQueue::~PriorityQueue(){
     delete[] heap;
     delete[] positions;
 }
 
-//העלאת אלמנט בערימה עד שהמיקום שלו תקין לפי סדר העדיפויות
+//Push an element up the stack until its position is correct according to minimum priority
 void PriorityQueue::heapifyUp(int index){
     while (index > 0){
         int parant = (index - 1) / 2;
         if (heap[index].priority >= heap[parant].priority)
             break;
         
-        //החלפה בין הצומת להורה
+        //Swap between node and parent
         std::swap(heap[index], heap[parant]);
         positions[heap[index].vertex] = index;
         positions[heap[parant].vertex] = parant;
@@ -46,7 +48,7 @@ void PriorityQueue::heapifyUp(int index){
     
 }
 
-//הורדת אלמנט בערימה עד שהמיקום שלו תקין לפי סדר העדיפויות
+//Removing an element from the stack until its position is correct according to priority
 void PriorityQueue::heapifyDown(int index){
     while (2* index+1 < size){
         int left = 2*index +1;
@@ -66,10 +68,10 @@ void PriorityQueue::heapifyDown(int index){
     } 
 }
 
-//הוספת צומת לתור העדיפויות
+//Adding a node to the priority queue
 void PriorityQueue::push(int vertex, int priority){
     if(size >= capacity){
-        //זריקת שגיאה מכיוון שהקיבולת מלאה כבר ואי אפשר להוסיף עוד איבר
+        //Throwing an error because the capacity is already full and no more members can be added
         std::cout << "Error: PriorityQueue is full.\n";
         return;
     }
@@ -80,7 +82,7 @@ void PriorityQueue::push(int vertex, int priority){
     size++;
 }
 
-//הוצאת הצומת עם העדיפות הגבוהה ביותר(הערך הקטן ביותר)
+//Removing the node with the highest priority (smallest value)
 int PriorityQueue::pop(){
     if(size == 0)
         return -1;
@@ -97,7 +99,7 @@ int PriorityQueue::pop(){
     return vertex;
 }
 
-//בדיקה אם התור ריק
+//Check if the queue is empty
 bool PriorityQueue::isEmpty() const{
     return size == 0;
 }

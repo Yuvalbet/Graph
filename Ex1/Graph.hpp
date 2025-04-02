@@ -1,16 +1,19 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
 namespace graph {
 
-    //מבנה נתונים של צומת ברשימת שכינויות
+    //Data structure of a node in a list of nodes 
     struct Node {
         int id;         
         int weight;
         Node* next;
     };
 
-    //מבנה נתונים של צלע בגרף
+    //Data structure of an edge in a graph
     struct Edge {
         int src;
         int dest;
@@ -19,36 +22,43 @@ namespace graph {
 
     class Graph {
         private:
-        //מספר הצמתים בגרף
+        //Number of nodes in the graph
         int vertices;
-        //מערך של רשימת שכינויות
+        //array of adjacency list
         Node** adjList;
 
 
 
         public:
-        //בנאי, יוצר גרף עם מספר צמתים מסויים
+        //Constructor, creates a graph with a choosen number of nodes
         Graph(int vertices);
-        //הורס, משחרר את כל הזכרון הדינמי שהוקצה לרשימת השכינויות
+
+        //Destractor, frees all dynamic memory allocated to the neighborhood list
         ~Graph();
 
-        //פונקציה להוספת צלע דו כיוונית(גרף לא מכוון)
+        
+        //Function to add a two-way edge (undirected graph)
         void addEdge(int src, int dest, int weight);
-        //פונקציה להוספת צלע חד כיוונית(לגרף מכוון)
+
+        //Function to add a one-way edge (to a directed graph)
         void addOneEdge(int src, int dest, int weight);
-        //פונקציה להסרת צלע מהגרף(לשני הכיוונים אם הגרף לא מכוון)
+
+        //Function to remove an edge from the graph (in both directions if the graph is undirected)
         void removeEdge(int src, int dest);
-        //פונקציה להדפסת הגרף לרשימת השכינויות
+
+        //Function to print the graph for the neighborhood list
         void print_graph() const;
-        //פונקציה שמחזירה את רשימת השכנים של הצומת
+
+        //Function that returns the list of neighbors of the node
         Node* getNeighbors(int vertex) const;
-        //פונקציה שמחזירה את מספר הצמתים שבגרף
-        int getVertexCount() const;
-        //פונקציה נוספת לקבלת מספר צמתים בגרף
+
+        //Another function to get the number of nodes in the graph
         int getVertices() const;
-        //פונקציה שמחזירה את רשימת השכינויות
+
+        //Function that returns the list of neighborhoods
         Node** getAdjList() const;
-        //פונקציה המחזירה את כל הצלעות בגרף כמערך של Edge
+
+        //Function that returns all edges in the graph as an array of Edge
         Edge* getAllEdges(int& edgeCount) const;
 
     

@@ -1,44 +1,50 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #include "UnionFind.hpp"
 #include <iostream>
 
 namespace graph {
 
-    //אתחול מבנה  union find עם מערך של תתי קבוצות(subsets)
+    //Initialize union find structure with an array of subsets
     UnionFind::UnionFind(int vertices) {
         size = vertices;
-        //יצירת מערך של קבוצות (subsets)
+        //Creating an array of subsets
         subsets = new Subset[vertices];
-        //אתחול  כל צומת להיות ההורה של עצמו ולדרגה אפס (rank)
+        //Initialize each node to be its own parent and to rank zero
         for (int i = 0; i < vertices; i++) {
-            //כל צומת מתחיל כהורה של עצמו
+            //Each node starts as its own parent
             subsets[i].parent = i;
-            //הדרגה ההתחלתית היא אפס
+            //The initial rank is zero
             subsets[i].rank = 0;
         }
     }
-    //משחרר את הזכרון של המבנה בעת ההשמדה
+
+    //Frees the structure's memory upon destruction
     UnionFind::~UnionFind() {
         delete[] subsets;
     }
-    //פונקציה למציאת הנציג של הקבוצה
+
+    //Function to find the group's representative
     int UnionFind::find(int i) {
         if (subsets[i].parent != i)
             subsets[i].parent = find(subsets[i].parent);
         return subsets[i].parent;
     }
-    //פונקציה לאיחוד 2 קבוצות לפי הדרגה
+    
+    //Function to merge 2 groups by rank
     void UnionFind::unionSets(int x, int y) {
         int rootX = find(x);
         int rootY = find(y);
 
-        //איחוד לפי דירוג- מחברים את העץ הקטן לגדול
+        //Union by ranking - connect the small tree to the large one
         if (subsets[rootX].rank < subsets[rootY].rank)
             subsets[rootX].parent = rootY;
         else if (subsets[rootX].rank > subsets[rootY].rank)
             subsets[rootY].parent = rootX;
         else {
             subsets[rootY].parent = rootX;
-            //מגדילים את הדרגה אם הם שווים
+            //Increase the rank if they are equal
             subsets[rootX].rank++;
         }
     }

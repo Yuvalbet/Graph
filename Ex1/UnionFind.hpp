@@ -1,31 +1,34 @@
+/*
+Email: yuvali532@gmail.com
+*/   
 #ifndef UNIONFIND_HPP
 #define UNIONFIND_HPP
 
 namespace graph {
 
-    // מבנה נתונים המייצג תת קבוצה במבנה union find
+    // Data structure representing a subset in a union find structure
     struct Subset {
-        //מצביע להורה של הצומת (אם הוא עצמו אז הוא שורש הקבוצה)
+        //Pointer to the parent of the node (if it is itself then it is the root of the group)
         int parent;
-        //דרגת הצומת
+        //Node degree
         int rank;
     };
 
     class UnionFind {
     private:
-        //מערך של תת קבוצות לניהול הקבוצות
+        //array of subgroups for group management
         Subset* subsets;
-        //מספר הצמתים (הקבוצות בהתחלה)
+        //Number of nodes (groups at the beginning)
         int size;
 
     public:
-        //בנאי-מאתחל את מבנה הנתונים עבור מספר נתון של צמתים
+        //Constructor - initializes the data structure for a given number of nodes
         UnionFind(int vertices);
-        //הורס- משחרר את הזכרון שהוקצה למערך התת קבוצות
+        //Destroys - Frees the memory allocated to the subgroup array
         ~UnionFind();
-        // פונקציה למציאת השורש של צומת i עם דחיסת נתבים
+        // Function to find the root of node i with router compression
         int find(int i);
-        //פונקציה לאיחוד שתי קבוצות לפי דרגה
+        //Function to merge two groups by rank
         void unionSets(int x, int y);
     };
 }

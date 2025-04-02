@@ -1,47 +1,50 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #include "Stack.hpp"
 #include <iostream>
 
-//בנאי- יוצר מחסנית עם קיבולת נתונה
+//Constructor - creates a stack with a given capacity
 Stack::Stack(int capacity){
-    //שמירת הקיבולת שהמשתמש הזין
+    //Save the capacity entered by the user
     this->capacity = capacity;
-    //הקצאת זכרון למערך המחסנית
+    //Allocate memory for the stack array
     arr = new int[capacity];
-    //המחסנית בהתחלה ריקה
+    //The stack is initially empty
     top = -1;
 }
 
-//הורס-משחרר את הזיכרון שהוקצה למערך
+//Destructs-frees the memory allocated to the array
 Stack::~Stack(){
     delete[]arr;
 }
 
-//פונקציה להוספת איבר למחסנית
+//Function to add an element to the stack
 void Stack::push(int value){
-    //בדיקה אם המחסנית מלאה
+    //Check if the stack is full
     if(top == capacity-1){
         std::cerr << "Stack overflow!" << std::endl;
-        //אם המסנית מלאה, לא ניתן להוסיף עוד איברים
+        //If the buffer is full, no more elements can be added
         return;
     }
-    //מגדילים את top ומוסיפים את הערך
+    //Increase top and add the value
     arr[++top] = value;
 }
 
-//פונקציה להוצאת איבר מהמחסנית
+//Function to pop an element from the stack
 int Stack::pop(){
-    //בדיקה אם המחסנית ריקה
+    //Check if the cartridge is empty
     if (isEmpty()){
         std::cerr << "Stack underflow!" <<std::endl;
-        //מחזירים ערך לא חוקי במקרה של ניסיון להוציא איבר ממחסנית ריקה
+        //Returns an invalid value in case of an attempt to remove a member from an empty stack
         return -1;
     }
-    //מחזירים את הערך העליון ומקטינים את הtop
+    //Return the top value and decrement the top
     return arr[top--];
     
 }
 
-//פונקציה שבודקת אם המחסנית ריקה
+//Function that checks if the stack is empty
 bool Stack::isEmpty() const{
     return top == -1;
 }

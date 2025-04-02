@@ -1,3 +1,6 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #ifndef PRIORITY_QUEUE_HPP
 #define PRIORITY_QUEUE_HPP
 
@@ -8,11 +11,11 @@ struct PQNode{
 
 class PriorityQueue{
 private:
-    //מערך המייצג את ערימת המינימום 
+    //Array representing the minimum stack
     PQNode* heap;
-    //מערך השומר את מיקומי הקודקודים בערימה
+    //Array that stores the positions of the vertices in the stack
     int* positions;
-    //גודל הערימה הנוכחי
+    //Current stack size
     int size;
     int capacity;
 
@@ -21,16 +24,16 @@ private:
 
 
 public:
-    //בנאי
+    //constructor
     PriorityQueue(int capacity);
-    //הורס
+    //Destroys
     ~PriorityQueue();
 
-    //הוספת איבר לתור העדיפויות
+    //Adding an element to the priority queue
     void push(int vertex,int priority);
-    //הוצאת הקודקוד עם העדיפות הגבוהה ביותר (הערך הנמוך ביותר)
+    //Extract the vertex with the highest priority (lowest value)
     int pop();
-    //בדיקה אם התור ריק
+    //Check if the queue is empty
     bool isEmpty() const;
 };
 

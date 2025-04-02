@@ -1,3 +1,6 @@
+/*
+Email: yuvali532@gmail.com
+*/
 #ifndef QUEUE_HPP
 #define QUEUE_HPP
 
@@ -5,31 +8,31 @@ class Queue{
 
 private:
 
-    //מערך לאחסון נתונים
+    //Array for storing data
     int *arr;
-    //גודל מקסימלי של התור
+    //Maximum queue size
     int capacity;
-    //אינדקס ההתחלה של התור
+    //Starting index of the queue
     int front;
-    //אינדקס הסוף של התור
+    //End index of the queue
     int rear;
-    //מספר האלמנטים בתור
+    //Number of elements in the queue
     int size;
 
 public:
     
-    //בנאי
+    //constructor
     Queue(int capacity);
-    //הורס
+    //Destroys
     ~Queue();
 
-    //הוספה לתור
+    //Add to queue
     void enqueue(int value);
-    //הסרה מהתור
+    //Remove from queue
     int dequeue();
-    //בדיקה אם התור ריק
+    //Check if the queue is empty
     bool isEmpty() const;
-    //בדיקה אם התור מלא
+    //Check if the queue is full
     bool isFull() const;
 
 };
