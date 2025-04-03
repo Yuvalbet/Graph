@@ -12,6 +12,7 @@ Email: yuvali532@gmail.com
 
 
 namespace graph {
+    
     Graph Algorithms::bfs(const Graph& graph, int startVertex) {
         int vertices = graph.getVertices();
         //Array to check which nodes have already been checked

@@ -5,7 +5,7 @@ Email: yuvali532@gmail.com
 #include <iostream>
 
 namespace graph {
-    /*
+    
     Graph::Graph(int vertices) {
         if (vertices < 0) {
             std::cerr << "Error: Number of vertices cannot be negative." << std::endl;
@@ -20,48 +20,44 @@ namespace graph {
         }
     }
     
-    */
-    Graph::Graph(int vertices) {
-        // להוסיף תנאי אם מס הקודקודים שלילי 
-        this->vertices = vertices;
-        adjList = new Node*[vertices];
-        for (int i = 0; i < vertices; i++) {
-            adjList[i] = nullptr;
-        }
-    }
-        
 
     Graph::~Graph() {
-        for (int i = 0; i < vertices; i++) {
-            Node* current = adjList[i];
-            while (current) {
-                Node* temp = current;
-                current = current->next;
-                // Delete every node in the list
-                delete temp;  
+        // Ensure we only free allocated memory
+        if (adjList) {  
+            for (int i = 0; i < vertices; i++) {
+                Node* current = adjList[i];
+                while (current) {
+                    Node* temp = current;
+                    current = current->next;
+                    // Free each node in the adjacency list
+                    delete temp;  
+                }
             }
+            // Free the adjacency list itself
+            delete[] adjList; 
+            // Avoid dangling pointers
+            adjList = nullptr;  // Avoid dangling pointers
         }
-        // Delete the pointer array
-        delete[] adjList;  
     }
+    
+        
 
     void Graph::addEdge(int src, int dest, int weight) {
         if (src < 0 || dest < 0 || src >= vertices || dest >= vertices) {
             std::cerr << "Error: The vertex not found" << std::endl;
             return;
         }
-        // להוסיף תנאי אם צלע כבר קיימת לפני שמוסיפים אותה
-        /*
-         // בודק אם הצלע כבר קיימת לפני שמוסיפים אותה
+        
+        // Checks if the edge already exists before adding it
         Node* current = adjList[src];
         while (current) {
-        if (current->id == dest) {
-            std::cerr << "Error: Edge already exists from " << src << " to " << dest << std::endl;
-            return;
+            if (current->id == dest) {
+                std::cerr << "Error: Edge already exists from " << src << " to " << dest << std::endl;
+                return;
+            }
+            current = current->next;
         }
-        current = current->next;
-        }
-        */
+        
         
         // Create a new edge at the src node
         Node* newNode = new Node{dest, weight, adjList[src]};  
@@ -77,108 +73,60 @@ namespace graph {
             std::cerr << "Error: The vertex not found" << std::endl;
             return;
         }
-        // להוסיף תנאי אם צלע כבר קיימת לפני שמוסיפים אותה
-        /*
-         // בודק אם הצלע כבר קיימת לפני שמוסיפים אותה
+       
+        // Checks if the edge already exists before adding it
         Node* current = adjList[src];
         while (current) {
-        if (current->id == dest) {
-            std::cerr << "Error: Edge already exists from " << src << " to " << dest << std::endl;
-            return;
+            if (current->id == dest) {
+                std::cerr << "Error: Edge already exists from " << src << " to " << dest << std::endl;
+                return;
+            }
+            current = current->next;
         }
-        current = current->next;
-        }
-        */
        
         // Create a new edge only in the direction src → dest (directed graph)
         Node* newNode = new Node{dest, weight, adjList[src]};
         adjList[src] = newNode;
     }
-    /*
-    void Graph::removeEdge(int src, int dest) {
-    if (src < 0 || dest < 0 || src >= vertices || dest >= vertices) {
-        std::cerr << "Error: The vertex not found" << std::endl;
-        return;
-    }
-
-    // בדיקה אם הצלע קיימת
-    bool edgeExists = false;
-    Node* current = adjList[src];
-    while (current) {
-        if (current->id == dest) {
-            edgeExists = true;
-            break;
-        }
-        current = current->next;
-    }
-
-    if (!edgeExists) {
-        std::cerr << "Error: Edge does not exist between " << src << " and " << dest << std::endl;
-        return;
-    }
-
-    // הסרת הקשת מקודקוד src
-    current = adjList[src];
-    Node* prev = nullptr;
-    while (current && current->id != dest) {
-        prev = current;
-        current = current->next;
-    }
-
-    if (prev)
-        prev->next = current->next;
-    else
-        adjList[src] = current->next; 
-
-    delete current;
-
-    // הסרת הקשת מקודקוד dest
-    current = adjList[dest];
-    prev = nullptr;
-
-    while (current && current->id != src) {
-        prev = current;
-        current = current->next;
-    }
-
-    if (prev)
-        prev->next = current->next;
-    else
-        adjList[dest] = current->next;
-
-    delete current;
-}
-
-    */
+    
     void Graph::removeEdge(int src, int dest) {
         if (src < 0 || dest < 0 || src >= vertices || dest >= vertices) {
             std::cerr << "Error: The vertex not found" << std::endl;
             return;
         }
-        // להוסיף תנאי אם צלע כבר קיימת לפני שמוסיפים אותה
 
-        // Remove edge from src node
+        // Check if the edge exists
+        bool edgeExists = false;
         Node* current = adjList[src];
+        while (current) {
+            if (current->id == dest) {
+                edgeExists = true;
+                break;
+            }
+            current = current->next;
+        }
+
+        if (!edgeExists) {
+            std::cerr << "Error: Edge does not exist between " << src << " and " << dest << std::endl;
+            return;
+        }
+
+        // Remove the edge from the src vertex
+        current = adjList[src];
         Node* prev = nullptr;
         while (current && current->id != dest) {
             prev = current;
             current = current->next;
         }
 
-        if (!current) {
-            std::cerr << "Error: Edge not found" << std::endl;
-            return;
-        }
-
         if (prev)
             prev->next = current->next;
         else
-            // Remove from the end of the list
             adjList[src] = current->next; 
 
         delete current;
 
-        // Two-way removal for the edge at node dest
+        // Remove the edge from vertex dest
         current = adjList[dest];
         prev = nullptr;
 
@@ -187,8 +135,6 @@ namespace graph {
             current = current->next;
         }
 
-        if (!current) return;
-
         if (prev)
             prev->next = current->next;
         else
@@ -196,6 +142,7 @@ namespace graph {
 
         delete current;
     }
+
 
     void Graph::print_graph() const {
         if(vertices > 0){
@@ -253,16 +200,16 @@ namespace graph {
         // Represent all the edges in an Edge array
         Edge* edges = new Edge[edgeCount];
         int index = 0;
-            for (int i = 0; i < vertices; i++) {
-                Node* current = adjList[i];
-                while (current) {
-                    edges[index].src = i;
-                    edges[index].dest = current->id;
-                    edges[index].weight = current->weight;
-                    index++;
-                    current = current->next;
-                }
+        for (int i = 0; i < vertices; i++) {
+            Node* current = adjList[i];
+            while (current) {
+                edges[index].src = i;
+                edges[index].dest = current->id;
+                edges[index].weight = current->weight;
+                index++;
+                current = current->next;
             }
+        }
         return edges;
     }
 }
