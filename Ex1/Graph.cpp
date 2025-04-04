@@ -9,8 +9,10 @@ namespace graph {
     Graph::Graph(int vertices) {
         if (vertices < 0) {
             std::cerr << "Error: Number of vertices cannot be negative." << std::endl;
-            this->vertices = 0;  // You can choose to set it to 0 or handle it differently
-            adjList = nullptr;  // Ensure no memory is allocated if invalid
+            // You can choose to set it to 0 or handle it differently
+            this->vertices = 0;
+            // Ensure no memory is allocated if invalid
+            adjList = nullptr; 
             return;
         }
         this->vertices = vertices;
@@ -48,7 +50,7 @@ namespace graph {
             return;
         }
         
-        // Checks if the edge already exists before adding it
+        // Check if the edge already exists in the src->dest direction
         Node* current = adjList[src];
         while (current) {
             if (current->id == dest) {
@@ -57,7 +59,18 @@ namespace graph {
             }
             current = current->next;
         }
-        
+
+        // Check if the edge already exists in the direction dest->src
+        current = adjList[dest];
+        while (current) {
+            if (current->id == src) {
+                std::cerr << "Error: Edge already exists from " << dest << " to " << src << std::endl;
+                // If the edge exists in the opposite direction, we will not add it
+                return; 
+            }
+            current = current->next;
+        }
+            
         
         // Create a new edge at the src node
         Node* newNode = new Node{dest, weight, adjList[src]};  
@@ -185,31 +198,38 @@ namespace graph {
     }
 
 
-    Edge* Graph::getAllEdges(int& edgeCount) const{
+    Edge* Graph::getAllEdges(int& edgeCount) const {
         edgeCount = 0;
-        // Count the number of edges
+        // Counting the edges
         Node** adjList = getAdjList();
         for (int i = 0; i < vertices; i++) {
             Node* current = adjList[i];
             while (current) {
-                edgeCount++;
+                // If this is an undirected graph, make sure not to count duplicate edges
+                if (current->id > i) {
+                    edgeCount++;
+                }
                 current = current->next;
             }
         }
-
-        // Represent all the edges in an Edge array
+        
+        // Display the edges in the Edge array
         Edge* edges = new Edge[edgeCount];
         int index = 0;
         for (int i = 0; i < vertices; i++) {
             Node* current = adjList[i];
             while (current) {
-                edges[index].src = i;
-                edges[index].dest = current->id;
-                edges[index].weight = current->weight;
-                index++;
+                // Only one-way edges from this vertex
+                if (current->id > i) {
+                    edges[index].src = i;
+                    edges[index].dest = current->id;
+                    edges[index].weight = current->weight;
+                    index++;
+                }
                 current = current->next;
             }
         }
         return edges;
     }
+    
 }

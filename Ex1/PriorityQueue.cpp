@@ -88,10 +88,13 @@ int PriorityQueue::pop(){
         return -1;
 
     int vertex = heap[0].vertex;
-    size--;  // Reduce the size first
+    // Reduce the size first
+    size--; 
 
-    if (size > 0) {  // Ensure there is still an element before accessing heap[0]
-        heap[0] = heap[size];  // Move the last element to the root
+    // Ensure there is still an element before accessing heap[0]
+    if (size > 0) { 
+        // Move the last element to the root
+        heap[0] = heap[size]; 
         positions[heap[0].vertex] = 0;
         heapifyDown(0);
     }
