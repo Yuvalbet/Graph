@@ -13,7 +13,6 @@ In addition to the graph algorithms, the project also includes extensive test co
 The `Graph` class represents a weighted graph. It allows you to:
 - Add and remove edges between nodes.
 - Traverse the graph using BFS and DFS algorithms.
-- Find the Minimum Spanning Tree (MST) using Kruskal's and Prim's algorithms.
 
 ## Graph Algorithms Implementations
 
@@ -35,22 +34,17 @@ Prim's algorithm finds the **Minimum Spanning Tree (MST)** of a graph. It grows 
 #### Kruskal's Algorithm
 Kruskal’s algorithm also finds the **Minimum Spanning Tree (MST)** but works by sorting all the edges in increasing order of weight and adding them to the MST as long as they don't form a cycle. It uses the **Union-Find** data structure to detect cycles during the process.
 
-### 3. **Union-Find (Disjoint Set)**
-The **Union-Find** data structure is used in Kruskal's algorithm to keep track of the connected components of the graph. It supports two operations:
-- **Find**: Determines the root (or representative) of the set containing a particular element.
-- **Union**: Merges two sets into one.
+## Explanation of data structures
 
-We employ **path compression** in the `find` function and **union by rank** in the `unionSets` function to optimize the Union-Find operations.
-
-### 4. **Other Data Structures**
 - **Stack**: A simple stack implementation with push and pop operations. It is used to store nodes during DFS traversal.
 - **Queue**: A queue implementation for BFS traversal.
 - **Priority Queue**: A priority queue is used in algorithms like Dijkstra and Prim to always select the node with the smallest edge weight.
+- **Union-Find (Disjoint Set)**:The Union-Find* data structure is used in Kruskal's algorithm to keep track of the connected components of the graph. It supports two operations:
+*Find: Determines the root (or representative) of the set containing a particular element.
+*Union: Merges two sets into one.
+We employ **path compression** in the `find` function and **union by rank** in the `unionSets` function to optimize the Union-Find operations.
 
 ## Algorithm Choices and Data Structures
-
-### Why Use Union-Find in Kruskal’s Algorithm?
-Kruskal’s algorithm relies on the **Union-Find** data structure to efficiently detect cycles while building the Minimum Spanning Tree (MST). The Union-Find structure allows for near-constant time operations for **find** and **union** operations, which is essential for the performance of Kruskal's algorithm, especially when the graph has many edges.
 
 ### Why Bubble Sort in Kruskal’s Algorithm?
 Although not the most efficient sorting algorithm, **Bubble Sort** was used for simplicity in this implementation. It is primarily used for educational purposes, but for production code, more efficient sorting algorithms like **Quick Sort** or **Merge Sort** would typically be preferred.
@@ -78,10 +72,10 @@ The tests verify that each component of the project is working as expected. You 
 
 ## Important Notes
 
-### No Built-in C++ Functions
-One of the key design choices in this project is that no built-in C++ libraries or functions (like STL) were used. Instead, all data structures and algorithms were implemented from scratch, which includes:
-- Manual implementation of **stacks**, **queues**, **union-find**, **priority queues**, etc.
-- All sorting and searching algorithms were custom-written without using STL functions.
+### No Built-in C++ Data Structures
+One of the key design choices in this project is that no built-in C++ libraries or Data Structures (like STL) were used. Instead, all data structures and algorithms were implemented from scratch, which includes:
+- Manual implementation of **stacks**, **queues**, **union-find**, **priority queues**.
+- All sorting and searching algorithms were custom-written without using STL Data Structures.
 
 ### How the Graph and Algorithms Work in `main`
 In the `main` function, you can see how the algorithms are demonstrated in action. You will find that:
@@ -120,6 +114,17 @@ Graphs that are empty or have no edges will still work with the traversal algori
 Graphs with cycles (e.g., loops in the graph) are handled correctly in the algorithms. For example:
 - **DFS** will mark vertices as "visited" to avoid infinite loops in cyclic graphs.
 - **Kruskal’s Algorithm** uses the **Union-Find** data structure to ensure no cycles are formed while building the MST.
+
+### Makefile and Execution
+
+The project includes a Makefile that allows easy compilation and testing of the project.
+Here are the important commands:
+- make Main: Compiles the full program for running the graph and algorithms demonstration.
+- make test: Compiles the test file and links all the necessary object files for running the tests with Doctest.
+- make clean: Removes all compiled object files and executables.
+- make valgrind: Runs the program using Valgrind to check for memory leaks and improper memory usage.
+
+You can use these commands from the terminal to compile and test the project efficiently.
 
 ## Conclusion
 
