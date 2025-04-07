@@ -15,7 +15,6 @@ private:
     PQNode* heap;
     //Array that stores the positions of the vertices in the stack
     int* positions;
-    //Current stack size
     int size;
     int capacity;
 
@@ -26,14 +25,13 @@ private:
 public:
     //constructor
     PriorityQueue(int capacity);
-    //Destroys
+    //Destractor
     ~PriorityQueue();
 
     //Adding an element to the priority queue
     void push(int vertex,int priority);
     //Extract the vertex with the highest priority (lowest value)
     int pop();
-    //Check if the queue is empty
     bool isEmpty() const;
 };
 

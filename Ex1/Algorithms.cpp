@@ -23,7 +23,6 @@ namespace graph {
         Queue q(vertices);
         //Mark the starting node as done
         visited[startVertex] = true;
-        //Enqueue the starting node
         q.enqueue(startVertex);
 
         
@@ -38,7 +37,6 @@ namespace graph {
             // Traverse all neighbors of the current node
             while (temp) {
                 int neighbor = temp->id;
-                // Save the original weight
                 int weight = temp->weight; 
 
                 if (!visited[neighbor]) {
@@ -48,7 +46,6 @@ namespace graph {
                     // Add the edge between the current node and its neighbor to the bfs tree
                     tree.addOneEdge(current, neighbor, weight);
                 }
-                //Move to the next neighbor
                 temp = temp->next;
             }
         }
@@ -90,7 +87,7 @@ namespace graph {
                     Node* temp = graph.getNeighbors(parentVertex);
                     while (temp) {
                         if (temp->id == current) {
-                            // Add a directed arc
+                            // Add a directed edge
                             tree.addOneEdge(parentVertex, current, temp->weight); 
                             break;
                         }
@@ -181,7 +178,7 @@ namespace graph {
         // Build a Dijkstra tree from the results
         for (int i = 0; i < vertices; i++) {
             if (parents[i] != -1) { 
-                // Add an edge to the tree only if the vertex has a parent (i.e., is on the path)
+                // Add an edge to the tree only if the vertex has a parent)
                 dijkstraTree->addOneEdge(parents[i], i, distances[i] - distances[parents[i]]);
             }
         }
@@ -227,7 +224,7 @@ namespace graph {
             parent[i] = -1;
         }
 
-        // Start at node 0 (you can start at any node)
+        // Start at node 0
         key[0] = 0;
         pq.push(0, 0);
 
@@ -284,7 +281,6 @@ namespace graph {
 
         // Create a Union-Find structure
         UnionFind uf(vertices);
-        // MST graph
         Graph mst(vertices);
 
         // Variable to store the weight of the mst
@@ -301,7 +297,6 @@ namespace graph {
                 mst.addEdge(src, dest, edges[i].weight);
                 // Adding the bow weight
                 mstWeight += edges[i].weight; 
-                // Unites the node groups
                 uf.unionSets(src, dest);
             }
         }

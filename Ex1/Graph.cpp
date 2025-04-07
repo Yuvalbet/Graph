@@ -9,7 +9,7 @@ namespace graph {
     Graph::Graph(int vertices) {
         if (vertices < 0) {
             std::cerr << "Error: Number of vertices cannot be negative." << std::endl;
-            // You can choose to set it to 0 or handle it differently
+            //can choose to set it to 0 or handle it differently
             this->vertices = 0;
             // Ensure no memory is allocated if invalid
             adjList = nullptr; 
@@ -38,7 +38,7 @@ namespace graph {
             // Free the adjacency list itself
             delete[] adjList; 
             // Avoid dangling pointers
-            adjList = nullptr;  // Avoid dangling pointers
+            adjList = nullptr; 
         }
     }
     

@@ -20,7 +20,7 @@ namespace graph {
         }
     }
 
-    //Frees the structure's memory upon destruction
+    //Destractor
     UnionFind::~UnionFind() {
         delete[] subsets;
     }

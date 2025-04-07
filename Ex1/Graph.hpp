@@ -22,9 +22,7 @@ namespace graph {
 
     class Graph {
         private:
-        //Number of nodes in the graph
         int vertices;
-        //array of adjacency list
         Node** adjList;
 
 

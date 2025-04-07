@@ -88,7 +88,6 @@ int PriorityQueue::pop(){
         return -1;
 
     int vertex = heap[0].vertex;
-    // Reduce the size first
     size--; 
 
     // Ensure there is still an element before accessing heap[0]
@@ -102,7 +101,6 @@ int PriorityQueue::pop(){
     return vertex;
 }
 
-//Check if the queue is empty
 bool PriorityQueue::isEmpty() const{
     return size == 0;
 }
